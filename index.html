@@ -109,36 +109,45 @@
   .year-tab.active,.year-tab:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 
   /* MAIN */
-  /* STRIP LAYOUT — C style */
+  /* WIDE MARGIN LAYOUT */
   .main{padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden;max-width:none;min-height:0;}
-  .entry-card{display:flex;align-items:stretch;border-bottom:1px solid var(--border);cursor:default;transition:background .15s;animation:fadeUp .25s ease;flex:1;min-height:0;}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .entry-card{display:flex;flex:1;min-height:0;border-bottom:1px solid var(--border);overflow:hidden;}
   .entry-card:last-child{border-bottom:none;}
-  .entry-card.current-year{background:rgba(0,0,0,.03);}
-  [data-theme="dark"] .entry-card.current-year{background:rgba(255,255,255,.03);}
+  .entry-card.current-year{background:rgba(196,168,130,.04);}
+  [data-theme="dark"] .entry-card.current-year{background:rgba(255,255,255,.02);}
 
-  /* left year column */
-  .entry-year-col{width:60px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--border);padding:8px 4px;gap:2px;}
+  /* left margin */
+  .entry-year-col{width:56px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 4px 0;gap:3px;}
   .entry-card.current-year .entry-year-col{border-right-color:var(--accent);}
-  .entry-year{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--accent);line-height:1;}
-  .entry-year-label{font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Lato',sans-serif;text-align:center;}
+  .entry-year{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--accent);line-height:1;}
+  .entry-year-label{font-size:9px;color:var(--text-muted);letter-spacing:.06em;font-family:'Lato',sans-serif;}
+  .entry-weather-col{margin-top:4px;}
 
-  /* weather column */
-  .entry-weather-col{width:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-right:1px solid rgba(0,0,0,.06);}
-  [data-theme="dark"] .entry-weather-col{border-right-color:rgba(255,255,255,.06);}
-  .mood-dot{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);cursor:pointer;transition:transform .15s,border-color .15s;display:flex;align-items:center;justify-content:center;background:none;}
-  .mood-dot:hover{transform:scale(1.1);border-color:var(--accent);}
+  /* mood dot */
+  .mood-dot{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;background:none;}
+  .mood-dot:hover{border-color:var(--accent);}
   .mood-dot.selected{border-color:var(--accent);}
-  .mood-dot svg{width:20px;height:20px;}
+  .mood-dot svg{width:16px;height:16px;}
 
-  /* text area */
-  .entry-body{flex:1;padding:10px 14px;display:flex;align-items:center;overflow:hidden;}
-  .entry-preview{font-family:'Noto Serif SC','Cormorant Garamond',serif;font-size:13px;font-weight:300;line-height:1.7;color:var(--text-primary);cursor:pointer;width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--text-muted);font-style:italic;font-size:12px;}
+  /* right content */
+  .entry-body{flex:1;position:relative;overflow:hidden;cursor:pointer;}
+  .entry-preview{
+    position:absolute;inset:0;padding:9px 30px 9px 13px;
+    font-family:'Noto Serif SC','Cormorant Garamond',serif;
+    font-size:13px;font-weight:300;line-height:1.8;color:var(--text-primary);
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;z-index:1;
+  }
+  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--border);font-style:italic;font-size:12px;}
 
-  /* right expand */
-  .entry-header-right{width:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-  .expand-btn{background:none;border:none;color:var(--text-muted);width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:color .15s;}
+  /* texture overlay — applied via JS */
+  .entry-body::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;}
+  .tex-lines .entry-body::before{background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,var(--border-light) 28px,var(--border-light) 29px);}
+  .tex-grid .entry-body::before{background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px),repeating-linear-gradient(to right,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px);opacity:.7;}
+  .tex-dots .entry-body::before{background-image:radial-gradient(circle,var(--border) 1.2px,transparent 1.2px);background-size:18px 18px;}
+
+  /* expand btn */
+  .entry-header-right{position:absolute;top:6px;right:6px;z-index:2;}
+  .expand-btn{background:none;border:none;color:var(--text-muted);width:24px;height:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:color .15s;}
   .expand-btn:hover{color:var(--accent);}
 
   .word-count{display:none;}
@@ -283,6 +292,18 @@
   .cal-day.selected::after{background:var(--bg);}
   .panel-close{margin-top:16px;width:100%;background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px;border-radius:8px;cursor:pointer;font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;}
   .panel-close:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* TEXTURE PICKER */
+  .tex-opt{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;flex:1;}
+  .tex-preview{width:100%;height:40px;border-radius:8px;border:2px solid var(--border);transition:border-color .2s;}
+  .tex-opt span{font-size:10px;color:var(--text-muted);font-family:'Lato',sans-serif;letter-spacing:.06em;}
+  .tex-opt.active .tex-preview{border-color:var(--accent);}
+  .tex-opt.active span{color:var(--accent);}
+
+  /* TEXTURE on right panel */
+  .right-texture-lines{background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,var(--border-light) 28px,var(--border-light) 29px)!important;}
+  .right-texture-grid{background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px),repeating-linear-gradient(to right,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px)!important;}
+  .right-texture-dots{background-image:radial-gradient(circle,var(--border) 1px,transparent 1px)!important;background-size:18px 18px!important;}
 
   /* THEME PICKER */
   .theme-panel{width:400px;max-width:94vw;}
@@ -475,6 +496,30 @@
   <div class="panel theme-panel">
     <div class="theme-panel-title">选择主题</div>
     <div class="theme-grid" id="themeGrid"></div>
+
+    <!-- TEXTURE PICKER -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Lato',sans-serif;margin-bottom:10px;">底纹</div>
+      <div style="display:flex;gap:8px;">
+        <div class="tex-opt" id="tex-none" onclick="setTexture('none')" title="空白">
+          <div class="tex-preview" style="background:var(--bg-card);"></div>
+          <span>空白</span>
+        </div>
+        <div class="tex-opt" id="tex-lines" onclick="setTexture('lines')" title="横线">
+          <div class="tex-preview" style="background:var(--bg-card);background-image:repeating-linear-gradient(to bottom,transparent,transparent 6px,var(--border) 6px,var(--border) 7px);"></div>
+          <span>横线</span>
+        </div>
+        <div class="tex-opt" id="tex-grid" onclick="setTexture('grid')" title="方格">
+          <div class="tex-preview" style="background:var(--bg-card);background-image:repeating-linear-gradient(to bottom,transparent,transparent 6px,var(--border) 6px,var(--border) 7px),repeating-linear-gradient(to right,transparent,transparent 6px,var(--border) 6px,var(--border) 7px);"></div>
+          <span>方格</span>
+        </div>
+        <div class="tex-opt" id="tex-dots" onclick="setTexture('dots')" title="点阵">
+          <div class="tex-preview" style="background:var(--bg-card);background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:6px 6px;"></div>
+          <span>点阵</span>
+        </div>
+      </div>
+    </div>
+
     <div class="dark-toggle-row">
       <span class="dark-toggle-label">夜间模式</span>
       <label class="toggle-switch">
@@ -574,25 +619,32 @@
       const wc=countWords(entry.html||'');
 
       const card=document.createElement('div');
-      card.className='entry-card'+(isThisYear?' current-year':''); card.id=`year-${year}`;
+      const texClass = currentTexture && currentTexture!=='none' ? ' tex-'+currentTexture : '';
+      card.className='entry-card'+(isThisYear?' current-year':'')+texClass; card.id=`year-${year}`;
+      const weekdayShort=['日','一','二','三','四','五','六'];
+      const wd = weekdayShort[entryDate.getDay()];
+      // Apply texture class to main
+      const mainEl = document.getElementById('mainContent');
+      mainEl.className = mainEl.className.replace(/tex-\S+/g,'').trim();
+      if(currentTexture && currentTexture!=='none') mainEl.classList.add('tex-'+currentTexture);
       card.innerHTML=`
         <div class="entry-year-col">
           <div class="entry-year">${year}</div>
-          <div class="entry-year-label">${isFuture?'未来':isThisYear?'今年':'过去'}</div>
-        </div>
-        <div class="entry-weather-col" id="mood-${year}">
-          ${entry.mood!==null&&entry.mood!==undefined
-            ? `<div class="mood-dot selected" onclick="setMood(${year},${entry.mood},this)" title="${WEATHER[entry.mood]}">${MOODS[entry.mood]}</div>`
-            : `<div class="mood-dot" onclick="openWeatherPicker(${year},this)" title="记录天气" style="opacity:.3;border-style:dashed;">
-                <svg viewBox="0 0 36 36" fill="none" style="width:14px;height:14px;"><circle cx="18" cy="18" r="7" stroke="currentColor" stroke-width="2"/></svg>
-               </div>`
-          }
+          <div class="entry-year-label">周${wd}</div>
+          <div class="entry-weather-col" id="mood-${year}">
+            ${entry.mood!==null&&entry.mood!==undefined
+              ? `<div class="mood-dot selected" onclick="setMood(${year},${entry.mood},this)" title="${WEATHER[entry.mood]}">${MOODS[entry.mood]}</div>`
+              : `<div class="mood-dot" onclick="openWeatherPicker(${year},this)" title="记录天气" style="opacity:.25;border-style:dashed;">
+                  <svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+                 </div>`
+            }
+          </div>
         </div>
         <div class="entry-body" onclick="openEditor(${year})">
           <div class="entry-preview" data-placeholder="${placeholder}">${entry.html||''}</div>
-        </div>
-        <div class="entry-header-right">
-          <button class="expand-btn" onclick="openEditor(${year})" title="全屏编辑">›</button>
+          <div class="entry-header-right">
+            <button class="expand-btn" onclick="event.stopPropagation();openEditor(${year})" title="全屏编辑">›</button>
+          </div>
         </div>`;
       main.appendChild(card);
     }
@@ -841,7 +893,32 @@
     }
   }
 
-  function openThemes(){buildThemeGrid();document.getElementById('themeOverlay').classList.add('open');}
+  function openThemes(){buildThemeGrid();initTextureUI();document.getElementById('themeOverlay').classList.add('open');}
+  // TEXTURE
+  let currentTexture = localStorage.getItem('diary_texture') || 'none';
+
+  function setTexture(tex) {
+    currentTexture = tex;
+    localStorage.setItem('diary_texture', tex);
+    applyTextureToCards();
+    document.querySelectorAll('.tex-opt').forEach(el => {
+      el.classList.toggle('active', el.id === 'tex-' + tex);
+    });
+  }
+
+  function applyTextureToCards() {
+    const main = document.getElementById('mainContent');
+    if (!main) return;
+    main.classList.remove('tex-lines','tex-grid','tex-dots');
+    if (currentTexture && currentTexture !== 'none') main.classList.add('tex-' + currentTexture);
+  }
+
+  function initTextureUI() {
+    document.querySelectorAll('.tex-opt').forEach(el => {
+      el.classList.toggle('active', el.id === 'tex-' + currentTexture);
+    });
+  }
+
   function applyTheme(key){
     currentTheme=key; localStorage.setItem('diary_theme',key);
     if(key==='dark'){isDark=true;document.getElementById('darkToggle').checked=true;document.documentElement.setAttribute('data-theme','dark');}
@@ -900,6 +977,20 @@
 
   applyTheme(currentTheme);
   render();
+  setTimeout(applyTextureToCards, 100);
+
+  // Fill remaining height after render
+  function resizeStrips() {
+    applyTextureToCards();
+    const main = document.getElementById('mainContent');
+    if (!main) return;
+    const strips = main.querySelectorAll('.entry-card');
+    if (!strips.length) return;
+    // Reset first
+    strips.forEach(s => { s.style.height = ''; s.style.flex = '1'; });
+  }
+  window.addEventListener('resize', resizeStrips);
+  setTimeout(resizeStrips, 100);
 </script>
 <script>
   if ('serviceWorker' in navigator) {
@@ -913,4 +1004,41 @@
   }
 </script>
 </body>
-</html>
+</html>  /* WIDE MARGIN LAYOUT */
+  .main{padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden;max-width:none;min-height:0;}
+
+  .entry-card{flex:1;min-height:0;display:flex;border-bottom:1px solid var(--border);overflow:hidden;}
+  .entry-card:last-child{border-bottom:none;}
+  .entry-card.current-year{background:rgba(0,0,0,.025);}
+  [data-theme="dark"] .entry-card.current-year{background:rgba(255,255,255,.025);}
+
+  /* LEFT MARGIN */
+  .entry-year-col{width:56px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 4px 0;gap:3px;}
+  .entry-card.current-year .entry-year-col{border-right-color:var(--accent);}
+  .entry-year{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--accent);line-height:1;}
+  .entry-year-label{font-size:9px;color:var(--text-muted);letter-spacing:.06em;font-family:'Lato',sans-serif;}
+  .entry-weather-col{margin-top:4px;}
+  .mood-dot{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;background:none;}
+  .mood-dot:hover{border-color:var(--accent);}
+  .mood-dot.selected{border-color:var(--accent);}
+  .mood-dot svg{width:16px;height:16px;}
+
+  /* RIGHT AREA */
+  .entry-body{flex:1;position:relative;overflow:hidden;cursor:pointer;}
+  .entry-texture{position:absolute;inset:0;pointer-events:none;z-index:0;}
+  .entry-header-right{position:absolute;top:8px;right:6px;z-index:2;}
+  .expand-btn{background:none;border:none;color:var(--text-muted);width:22px;height:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:color .15s;}
+  .expand-btn:hover{color:var(--accent);}
+  .entry-preview{position:absolute;inset:0;padding:9px 30px 8px 13px;font-family:'Noto Serif SC','Cormorant Garamond',serif;font-size:13px;font-weight:300;line-height:1.8;color:var(--text-primary);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;z-index:1;}
+  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--border);font-style:italic;font-size:12px;}
+
+  /* TEXTURES */
+  .tex-lines .entry-texture{background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,var(--border-light) 28px,var(--border-light) 29px);}
+  .tex-grid .entry-texture{background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px),repeating-linear-gradient(to right,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px);opacity:.65;}
+  .tex-dots .entry-texture{background-image:radial-gradient(circle,var(--border) 1.2px,transparent 1.2px);background-size:18px 18px;opacity:.8;}
+
+  .word-count{display:none;}
+  .years-divider{display:none;}
+  .divider-line{display:none;}
+
+
