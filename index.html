@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5年日记 · Five Years Diary</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Lato:wght@300;400&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── BASE ── */
+  :root {
+    --bg:#FAF7F2; --bg-card:#F5F0E8; --text-primary:#2C1A0E; --text-muted:#B8956A;
+    --accent:#C4A882; --border:#E8DDD0; --border-light:#F0E8DC; --shadow:rgba(44,26,14,0.12);
+  }
+
+  /* DARK */
+  [data-theme="dark"]{
+    --bg:#0D1117;--bg-card:#141B24;--text-primary:#E8EDF2;--text-muted:#4A6480;
+    --accent:#7BA3C0;--border:#1E2D3D;--border-light:#172030;--shadow:rgba(0,0,0,0.5);
+  }
+
+  /* GIRL'S DREAM — replaces old pink
+     60% bg: #FDF0F4 (Girl's Dream light)
+     30% card/border: #84BECA (Diamond blue)
+     10% accent: #EF4067 (Heartbeat red-pink) */
+  [data-theme="girls-dream"]{
+    --bg:#FDF0F4;
+    --bg-card:#EAF5F8;
+    --text-primary:#5A0A1A;
+    --text-muted:#BE8090;
+    --accent:#EF4067;
+    --border:#84BECA;
+    --border-light:#B8DDE6;
+    --shadow:rgba(239,64,103,0.12);
+  }
+
+  /* BUTTERFLY — replaces old purple
+     60% bg: #F0EDF5 (lavender mist)
+     30% card: #C8C0D4 (dusty mauve)
+     10% accent: #9F96A3 (pearl purple) */
+  [data-theme="butterfly"]{
+    --bg:#F0EDF5;
+    --bg-card:#E0D8EC;
+    --text-primary:#3A2E4A;
+    --text-muted:#9086A8;
+    --accent:#7B5F9E;
+    --border:#C8C0D4;
+    --border-light:#DDD8E8;
+    --shadow:rgba(123,95,158,0.12);
+  }
+
+  /* MAPLE SUGAR — dark moody warm
+     60% bg: #F5EDE6 (maple sugar light)
+     30% card: #C0957B (maple sugar)
+     10% accent: #8B553F (brown patina) */
+  [data-theme="maple"]{
+    --bg:#F5EDE6;
+    --bg-card:#E8D5C4;
+    --text-primary:#3E1011;
+    --text-muted:#8B553F;
+    --accent:#8B553F;
+    --border:#C0957B;
+    --border-light:#D8B89E;
+    --shadow:rgba(62,16,17,0.15);
+  }
+
+  /* AMARANTH — Mediterranean
+     60% bg: #F8F4EE (chalk warm)
+     30% card: #AABAAE (brook green)
+     10% accent: #933B5B (amaranth) */
+  [data-theme="amaranth"]{
+    --bg:#F8F4EE;
+    --bg-card:#E6EDE8;
+    --text-primary:#2A1020;
+    --text-muted:#9F9679;
+    --accent:#933B5B;
+    --border:#AABAAE;
+    --border-light:#C8D4CA;
+    --shadow:rgba(147,59,91,0.12);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Noto Serif SC','Cormorant Garamond',serif;
+    background:var(--bg);color:var(--text-primary);
+    min-height:100vh;transition:background .4s,color .4s;
+  }
+
+  /* HEADER */
+  .header{padding:16px 24px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:.14em;}
+  .logo span{color:var(--accent);}
+  .header-controls{display:flex;gap:8px;}
+  .ctrl-btn{background:none;border:1px solid var(--border);color:var(--text-muted);padding:7px 14px;border-radius:20px;cursor:pointer;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.08em;transition:all .2s;}
+  .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* DATE NAV */
+  .date-nav{padding:14px 24px 0;display:flex;align-items:center;gap:18px;flex-shrink:0;}
+  .date-display{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;}
+  .date-sub{font-family:'Noto Serif SC',serif;font-size:13px;font-weight:300;letter-spacing:.08em;color:var(--text-muted);display:block;margin-top:4px;}
+  .nav-btn{background:none;border:1px solid var(--border);color:var(--text-muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .today-btn{margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-muted);padding:7px 16px;border-radius:20px;cursor:pointer;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;}
+  .today-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* YEAR TABS */
+  .year-tabs{display:none;}
+  .year-tabs::-webkit-scrollbar{display:none;}
+  .year-tab{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.06em;white-space:nowrap;transition:all .2s;flex-shrink:0;}
+  .year-tab.active,.year-tab:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+
+  /* MAIN */
+  /* WIDE MARGIN LAYOUT */
+  .main{padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden;max-width:none;min-height:0;}
+  .entry-card{display:flex;flex:1;min-height:0;border-bottom:1px solid var(--border);overflow:hidden;}
+  .entry-card:last-child{border-bottom:none;}
+  .entry-card.current-year{background:rgba(196,168,130,.04);}
+  [data-theme="dark"] .entry-card.current-year{background:rgba(255,255,255,.02);}
+
+  /* left margin */
+  .entry-year-col{width:56px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 4px 0;gap:3px;}
+  .entry-card.current-year .entry-year-col{border-right-color:var(--accent);}
+  .entry-year{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--accent);line-height:1;}
+  .entry-year-label{font-size:9px;color:var(--text-muted);letter-spacing:.06em;font-family:'Lato',sans-serif;}
+  .entry-weather-col{margin-top:4px;}
+
+  /* mood dot */
+  .mood-dot{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;background:none;}
+  .mood-dot:hover{border-color:var(--accent);}
+  .mood-dot.selected{border-color:var(--accent);}
+  .mood-dot svg{width:16px;height:16px;}
+
+  /* right content */
+  .entry-body{flex:1;position:relative;overflow:hidden;cursor:pointer;}
+  .entry-preview{
+    position:absolute;inset:0;padding:9px 30px 9px 13px;
+    font-family:'Noto Serif SC','Cormorant Garamond',serif;
+    font-size:13px;font-weight:300;line-height:1.8;color:var(--text-primary);
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;z-index:1;
+  }
+  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--border);font-style:italic;font-size:12px;}
+
+  /* texture overlay — applied via JS */
+  .entry-body::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;}
+  .tex-lines .entry-body::before{background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,var(--border-light) 28px,var(--border-light) 29px);}
+  .tex-grid .entry-body::before{background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px),repeating-linear-gradient(to right,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px);opacity:.7;}
+  .tex-dots .entry-body::before{background-image:radial-gradient(circle,var(--border) 1.2px,transparent 1.2px);background-size:18px 18px;}
+
+  /* expand btn */
+  .entry-header-right{position:absolute;top:6px;right:6px;z-index:2;}
+  .expand-btn{background:none;border:none;color:var(--text-muted);width:24px;height:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:color .15s;}
+  .expand-btn:hover{color:var(--accent);}
+
+  .word-count{display:none;}
+  .years-divider{display:none;}
+  .divider-line{display:none;}
+
+  /* FULLSCREEN EDITOR */
+  /* FULLSCREEN EDITOR */
+  .editor-overlay{
+    position:fixed;inset:0;z-index:300;background:var(--bg);
+    display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+  }
+  .editor-overlay.open{opacity:1;pointer-events:all;}
+
+  /* TOP NAV BAR */
+  .editor-nav{padding:12px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .back-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:20px;padding:4px 8px;border-radius:8px;transition:color .2s;line-height:1;}
+  .back-btn:hover{color:var(--accent);}
+  .editor-nav-right{display:flex;align-items:center;gap:10px;}
+  .editor-save-ind{font-size:11px;color:var(--text-muted);opacity:0;transition:opacity .3s;font-family:'Lato',sans-serif;}
+  .editor-save-ind.visible{opacity:1;}
+  .save-btn{background:var(--accent);border:none;color:var(--bg);padding:8px 18px;border-radius:20px;cursor:pointer;font-family:'Noto Serif SC',serif;font-size:13px;font-weight:400;transition:opacity .2s;}
+  .save-btn:hover{opacity:.85;}
+
+  /* DATE HEADER */
+  .editor-date-header{padding:20px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;}
+  .editor-date-big{display:flex;align-items:baseline;gap:12px;}
+  .editor-day-num{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:var(--text-primary);}
+  .editor-day-num-underline{width:48px;height:3px;background:var(--accent);border-radius:2px;margin-top:4px;}
+  .editor-month-year{display:flex;flex-direction:column;gap:2px;padding-bottom:6px;}
+  .editor-month-label{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:300;color:var(--text-primary);}
+  .editor-weekday-label{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--text-muted);}
+
+  /* WEATHER PICKER (replaces mood) */
+  .weather-picker-btn{width:52px;height:52px;border-radius:50%;border:2px solid var(--border);background:var(--bg-card);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+  .weather-picker-btn:hover{border-color:var(--accent);}
+  .weather-picker-btn svg{width:28px;height:28px;}
+  .weather-picker-btn.has-weather{border-color:var(--accent);}
+
+  /* WEATHER DROPDOWN */
+  .weather-dropdown{position:absolute;top:0;right:0;background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 12px 40px var(--shadow);z-index:10;display:none;width:220px;}
+  .weather-dropdown.open{display:block;}
+  .weather-dropdown-title{font-family:'Noto Serif SC',serif;font-size:12px;color:var(--text-muted);margin-bottom:10px;}
+  .weather-options{display:flex;gap:8px;flex-wrap:wrap;}
+  .weather-opt{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px;border-radius:10px;border:1px solid transparent;transition:all .15s;width:56px;}
+  .weather-opt:hover{background:var(--border);}
+  .weather-opt.selected{border-color:var(--accent);background:var(--bg-card);}
+  .weather-opt svg{width:28px;height:28px;}
+  .weather-opt span{font-size:10px;color:var(--text-muted);font-family:'Noto Serif SC',serif;}
+  .weather-wrapper{position:relative;}
+
+  /* DIVIDER LINE */
+  .editor-divider{margin:16px 24px 0;height:1px;background:var(--border);}
+
+  /* TOOLBAR */
+  .editor-toolbar{padding:8px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:3px;flex-wrap:wrap;flex-shrink:0;background:var(--bg);}
+  .tb-sep{width:1px;height:18px;background:var(--border);margin:0 3px;}
+  .tb-btn{background:none;border:none;color:var(--text-muted);padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Noto Serif SC',serif;transition:all .15s;display:flex;align-items:center;gap:3px;}
+  .tb-btn:hover{background:var(--border);color:var(--text-primary);}
+  .tb-btn.active{background:var(--accent);color:var(--bg);}
+  .tb-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* EDITOR BODY */
+  .editor-scroll{flex:1;overflow-y:auto;padding:24px 24px 60px;}
+  .editor-content{max-width:680px;margin:0 auto;}
+  .editor-wordcount{font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:20px;}
+  .editor-area{width:100%;min-height:300px;outline:none;
+    font-family:'Noto Serif SC','Cormorant Garamond',serif;
+    font-size:18px;font-weight:300;line-height:2;
+    color:var(--text-primary);caret-color:var(--accent);}
+  .editor-area:empty::before{content:attr(data-placeholder);color:var(--text-muted);font-style:italic;pointer-events:none;}
+  .editor-area h1{font-size:28px;font-weight:500;font-family:'Noto Serif SC',serif;line-height:1.4;margin-bottom:10px;color:var(--text-primary);}
+  .editor-area h2{font-size:20px;font-weight:400;font-family:'Noto Serif SC',serif;line-height:1.5;margin-bottom:6px;}
+  .editor-area p{margin-bottom:4px;}
+  .editor-area ul{padding-left:22px;margin-bottom:4px;}
+  .editor-area ul li{margin-bottom:3px;}
+  .editor-area ol{padding-left:22px;margin-bottom:4px;}
+  .editor-area b,.editor-area strong{font-weight:500;}
+
+  /* GUIDED QUESTIONS */
+  .guided-mode { display:none; flex-direction:column; gap:0; }
+  .guided-mode.active { display:flex; }
+  .guided-q {
+    padding:20px 0 0;
+    border-top:1px solid var(--border-light);
+  }
+  .guided-q:first-child { border-top:none; padding-top:0; }
+  .guided-q-label {
+    font-family:'Noto Serif SC',serif;
+    font-size:13px; font-weight:400;
+    color:var(--accent); margin-bottom:10px;
+    letter-spacing:.02em;
+  }
+  .guided-q-input {
+    width:100%; background:none; border:none; outline:none; resize:none;
+    font-family:'Noto Serif SC',serif; font-size:17px; font-weight:300;
+    line-height:1.9; color:var(--text-primary); min-height:60px;
+    caret-color:var(--accent);
+  }
+  .guided-q-input::placeholder { color:var(--text-muted); font-style:italic; }
+  .guided-divider { height:1px; background:var(--border-light); margin:4px 0 0; }
+  .guide-toggle-btn { 
+    background:none; border:1px solid var(--border); color:var(--text-muted);
+    padding:5px 10px; border-radius:6px; cursor:pointer;
+    font-family:'Noto Serif SC',serif; font-size:12px;
+    transition:all .15s; display:flex; align-items:center; gap:4px;
+  }
+  .guide-toggle-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .guide-toggle-btn.active { background:var(--accent); border-color:var(--accent); color:var(--bg); }
+
+  /* OVERLAYS */
+  .overlay{
+    position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.45);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .25s;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .overlay.open{opacity:1;pointer-events:all;}
+  .panel{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:0 24px 64px var(--shadow);transform:translateY(10px);transition:transform .25s;}
+  .overlay.open .panel{transform:translateY(0);}
+
+  /* CALENDAR */
+  .cal-panel{width:320px;max-width:92vw;}
+  .cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .cal-month-label{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:300;}
+  .cal-nav{display:flex;gap:6px;}
+  .cal-nav-btn{background:none;border:1px solid var(--border);color:var(--text-muted);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+  .cal-nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px;}
+  .cal-weekday{text-align:center;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:3px 0;font-family:'Lato',sans-serif;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .cal-day{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;cursor:pointer;position:relative;transition:all .15s;color:var(--text-primary);}
+  .cal-day:hover{background:var(--border);}
+  .cal-day.empty{cursor:default;pointer-events:none;}
+  .cal-day.today{border:1px solid var(--accent);color:var(--accent);}
+  .cal-day.selected{background:var(--accent);color:var(--bg);}
+  .cal-day.has-entry::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--accent);}
+  .cal-day.selected::after{background:var(--bg);}
+  .panel-close{margin-top:16px;width:100%;background:none;border:1px solid var(--border);color:var(--text-muted);padding:8px;border-radius:8px;cursor:pointer;font-family:'Lato',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;}
+  .panel-close:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* TEXTURE PICKER */
+  .tex-opt{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;flex:1;}
+  .tex-preview{width:100%;height:40px;border-radius:8px;border:2px solid var(--border);transition:border-color .2s;}
+  .tex-opt span{font-size:10px;color:var(--text-muted);font-family:'Lato',sans-serif;letter-spacing:.06em;}
+  .tex-opt.active .tex-preview{border-color:var(--accent);}
+  .tex-opt.active span{color:var(--accent);}
+
+  /* TEXTURE on right panel */
+  .right-texture-lines{background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,var(--border-light) 28px,var(--border-light) 29px)!important;}
+  .right-texture-grid{background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px),repeating-linear-gradient(to right,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px)!important;}
+  .right-texture-dots{background-image:radial-gradient(circle,var(--border) 1px,transparent 1px)!important;background-size:18px 18px!important;}
+
+  /* THEME PICKER */
+  .theme-panel{width:400px;max-width:94vw;}
+  .theme-panel-title{font-family:'Noto Serif SC',serif;font-size:17px;font-weight:300;letter-spacing:.04em;margin-bottom:16px;}
+  .theme-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .theme-swatch{border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;}
+  .theme-swatch:hover{transform:translateY(-2px);}
+  .theme-swatch.active{border-color:var(--accent);}
+  .swatch-top{padding:10px 12px 8px;border-bottom:1px solid;}
+  .swatch-logo{font-family:'Cormorant Garamond',serif;font-size:10px;font-weight:300;letter-spacing:.1em;}
+  .swatch-bar{height:4px;border-radius:2px;margin-top:6px;opacity:.35;}
+  .swatch-bar2{height:4px;border-radius:2px;margin-top:3px;width:55%;opacity:.2;}
+  .swatch-bottom{padding:7px 12px 9px;}
+  .swatch-dots{display:flex;gap:4px;}
+  .swatch-dot{width:11px;height:11px;border-radius:50%;border:1px solid;}
+  .swatch-name{font-size:9px;letter-spacing:.06em;text-transform:uppercase;margin-top:5px;opacity:.55;font-family:'Lato',sans-serif;line-height:1.3;}
+  .dark-toggle-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+  .dark-toggle-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Lato',sans-serif;}
+  .toggle-switch{position:relative;width:36px;height:20px;cursor:pointer;}
+  .toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:20px;transition:background .2s;}
+  .toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--text-muted);border-radius:50%;transition:all .2s;}
+  .toggle-switch input:checked + .toggle-track{background:var(--accent);}
+  .toggle-switch input:checked ~ .toggle-thumb{left:19px;background:var(--bg);}
+
+  @media(max-width:600px){
+    .header,.date-nav{padding-left:16px;padding-right:16px;}
+    .date-display{font-size:28px;}
+    .editor-scroll{padding:24px 18px;}
+    .editor-nav,.editor-toolbar{padding-left:18px;padding-right:18px;}
+    .theme-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">five <span>·</span> year <span>·</span> diary</div>
+  <div class="header-controls">
+    <button class="ctrl-btn" onclick="openCalendar()">◫ 日历</button>
+    <button class="ctrl-btn" onclick="openThemes()">◈ 主题</button>
+  </div>
+</header>
+
+<div class="date-nav">
+  <button class="nav-btn" onclick="changeDay(-1)">‹</button>
+  <div>
+    <div class="date-display" id="dateDisplay">—</div>
+    <span class="date-sub" id="monthYearDisplay">—</span>
+  </div>
+  <button class="nav-btn" onclick="changeDay(1)">›</button>
+  <button class="today-btn" onclick="goToday()">今天</button>
+</div>
+
+<div class="year-tabs" id="yearTabs"></div>
+<div class="main" id="mainContent"></div>
+
+<!-- FULLSCREEN EDITOR -->
+<div class="editor-overlay" id="editorOverlay">
+  <!-- TOP NAV -->
+  <div class="editor-nav">
+    <button class="back-btn" onclick="closeEditor()">‹</button>
+    <div class="editor-nav-right">
+      <span class="editor-save-ind" id="editorSaveInd">已保存</span>
+      <button class="save-btn" onclick="closeEditor()">保存</button>
+    </div>
+  </div>
+
+  <!-- DATE + WEATHER -->
+  <div class="editor-date-header">
+    <div>
+      <div class="editor-date-big">
+        <div>
+          <div class="editor-day-num" id="editorDayNum">—</div>
+          <div class="editor-day-num-underline"></div>
+        </div>
+        <div class="editor-month-year">
+          <span class="editor-month-label" id="editorMonthLabel">—</span>
+          <span class="editor-weekday-label" id="editorWeekdayLabel">—</span>
+        </div>
+      </div>
+      <div style="margin-top:6px;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--accent);" id="editorYearBadge">—</div>
+    </div>
+    <div class="weather-wrapper">
+      <button class="weather-picker-btn" id="weatherPickerBtn" onclick="toggleWeatherDropdown()" title="选择天气">
+        <span id="weatherIconDisplay">
+          <svg viewBox="0 0 36 36" fill="none" style="width:28px;height:28px;opacity:.35"><circle cx="18" cy="18" r="7" stroke="currentColor" stroke-width="1.5"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".4"><line x1="18" y1="5" x2="18" y2="9"/><line x1="18" y1="27" x2="18" y2="31"/><line x1="5" y1="18" x2="9" y2="18"/><line x1="27" y1="18" x2="31" y2="18"/></g></svg>
+        </span>
+      </button>
+      <div class="weather-dropdown" id="weatherDropdown">
+        <div class="weather-dropdown-title">今天天气如何？</div>
+        <div class="weather-options" id="weatherOptions"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="editor-divider"></div>
+
+  <!-- TOOLBAR -->
+  <div class="editor-toolbar">
+    <button class="tb-btn" onclick="fmt('formatBlock','h1')">大标题</button>
+    <button class="tb-btn" onclick="fmt('formatBlock','h2')">小标题</button>
+    <button class="tb-btn" onclick="fmt('formatBlock','p')">正文</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="tbBold" onclick="fmtToggle('bold','tbBold')">
+      <svg viewBox="0 0 24 24"><path d="M6 4h8a4 4 0 010 8H6z"/><path d="M6 12h9a4 4 0 010 8H6z"/></svg>
+    </button>
+    <button class="tb-btn" id="tbItalic" onclick="fmtToggle('italic','tbItalic')">
+      <svg viewBox="0 0 24 24"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+    </button>
+    <button class="tb-btn" id="tbUnder" onclick="fmtToggle('underline','tbUnder')">
+      <svg viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0012 0V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+    </button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="fmt('insertUnorderedList')">
+      <svg viewBox="0 0 24 24"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <button class="tb-btn" onclick="fmt('insertOrderedList')">
+      <svg viewBox="0 0 24 24"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+    </button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="fmt('indent')">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/><polyline points="8,12 11,9 11,15"/></svg>
+    </button>
+    <button class="tb-btn" onclick="fmt('outdent')">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/><polyline points="11,12 8,9 8,15"/></svg>
+    </button>
+    <div class="tb-sep"></div>
+    <button class="guide-toggle-btn" id="guideToggleBtn" onclick="toggleGuideMode()">✦ 引导</button>
+  </div>
+
+  <!-- EDITOR BODY -->
+  <div class="editor-scroll" onclick="focusEditor()">
+    <div class="editor-content">
+      <div class="editor-wordcount" id="editorWC"></div>
+
+      <!-- FREE WRITE MODE -->
+      <div class="editor-area" id="editorArea" contenteditable="true" data-placeholder="写下今天……"></div>
+
+      <!-- GUIDED MODE -->
+      <div class="guided-mode" id="guidedMode">
+        <div class="guided-q">
+          <div class="guided-q-label">今天的心情如何？</div>
+          <textarea class="guided-q-input" id="gq1" placeholder="说说看……" rows="2"></textarea>
+          <div class="guided-divider"></div>
+        </div>
+        <div class="guided-q">
+          <div class="guided-q-label">今天最开心的一件事？</div>
+          <textarea class="guided-q-input" id="gq2" placeholder="哪怕很小的事……" rows="2"></textarea>
+          <div class="guided-divider"></div>
+        </div>
+        <div class="guided-q">
+          <div class="guided-q-label">今天吃了什么好吃的？</div>
+          <textarea class="guided-q-input" id="gq3" placeholder="今天吃得怎么样……" rows="2"></textarea>
+          <div class="guided-divider"></div>
+        </div>
+        <div class="guided-q">
+          <div class="guided-q-label">此刻你在想什么？</div>
+          <textarea class="guided-q-input" id="gq4" placeholder="脑子里转的是……" rows="2"></textarea>
+          <div class="guided-divider"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div class="overlay" id="calOverlay" onclick="handleOverlayClick(event,'calOverlay')">
+  <div class="panel cal-panel">
+    <div class="cal-top">
+      <div class="cal-month-label" id="calMonthLabel">—</div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calChangeMonth(-1)">‹</button>
+        <button class="cal-nav-btn" onclick="calChangeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-weekdays">
+      <div class="cal-weekday">日</div><div class="cal-weekday">一</div>
+      <div class="cal-weekday">二</div><div class="cal-weekday">三</div>
+      <div class="cal-weekday">四</div><div class="cal-weekday">五</div>
+      <div class="cal-weekday">六</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <button class="panel-close" onclick="closeOverlay('calOverlay')">关闭</button>
+  </div>
+</div>
+
+<!-- THEME PICKER -->
+<div class="overlay" id="themeOverlay" onclick="handleOverlayClick(event,'themeOverlay')">
+  <div class="panel theme-panel">
+    <div class="theme-panel-title">选择主题</div>
+    <div class="theme-grid" id="themeGrid"></div>
+
+    <!-- TEXTURE PICKER -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);font-family:'Lato',sans-serif;margin-bottom:10px;">底纹</div>
+      <div style="display:flex;gap:8px;">
+        <div class="tex-opt" id="tex-none" onclick="setTexture('none')" title="空白">
+          <div class="tex-preview" style="background:var(--bg-card);"></div>
+          <span>空白</span>
+        </div>
+        <div class="tex-opt" id="tex-lines" onclick="setTexture('lines')" title="横线">
+          <div class="tex-preview" style="background:var(--bg-card);background-image:repeating-linear-gradient(to bottom,transparent,transparent 6px,var(--border) 6px,var(--border) 7px);"></div>
+          <span>横线</span>
+        </div>
+        <div class="tex-opt" id="tex-grid" onclick="setTexture('grid')" title="方格">
+          <div class="tex-preview" style="background:var(--bg-card);background-image:repeating-linear-gradient(to bottom,transparent,transparent 6px,var(--border) 6px,var(--border) 7px),repeating-linear-gradient(to right,transparent,transparent 6px,var(--border) 6px,var(--border) 7px);"></div>
+          <span>方格</span>
+        </div>
+        <div class="tex-opt" id="tex-dots" onclick="setTexture('dots')" title="点阵">
+          <div class="tex-preview" style="background:var(--bg-card);background-image:radial-gradient(circle,var(--border) 1px,transparent 1px);background-size:6px 6px;"></div>
+          <span>点阵</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dark-toggle-row">
+      <span class="dark-toggle-label">夜间模式</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="darkToggle" onchange="toggleDark(this.checked)">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <button class="panel-close" style="margin-top:12px;" onclick="closeOverlay('themeOverlay')">完成</button>
+  </div>
+</div>
+
+<script>
+  let currentDate = new Date();
+  let isDark = false;
+  let currentTheme = localStorage.getItem('diary_theme') || 'cream';
+  let calViewDate = new Date();
+  let editorYear = null;
+  let editorSaveTimer = null;
+  const YEARS = 5;
+  const MONTHS = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  const DAYS = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const WEATHER = ['晴','多云','雨','雷暴','雾'];
+
+  const MOODS = [
+    `<svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="7.5" fill="#E8C870" opacity=".9"/><g stroke="#E8C870" stroke-width="2" stroke-linecap="round"><line x1="18" y1="4" x2="18" y2="8"/><line x1="18" y1="28" x2="18" y2="32"/><line x1="4" y1="18" x2="8" y2="18"/><line x1="28" y1="18" x2="32" y2="18"/><line x1="8.5" y1="8.5" x2="11.4" y2="11.4"/><line x1="24.6" y1="24.6" x2="27.5" y2="27.5"/><line x1="27.5" y1="8.5" x2="24.6" y2="11.4"/><line x1="11.4" y1="24.6" x2="8.5" y2="27.5"/></g></svg>`,
+    `<svg viewBox="0 0 36 36" fill="none"><path d="M10 23 Q7 23 7 19 Q7 15 11 14.5 Q11.5 10 16 10 Q18.5 10 20 12 Q21 10.5 23 10.5 Q27 10.5 27 14.5 Q29.5 15 29.5 18.5 Q29.5 23 25 23 Z" fill="#C8D8E8" opacity=".9"/></svg>`,
+    `<svg viewBox="0 0 36 36" fill="none"><path d="M10 20 Q7 20 7 16.5 Q7 13 10.5 12.5 Q11 8 15 8 Q17.5 8 19 10 Q20 8.5 22 8.5 Q25.5 8.5 25.5 12 Q28 12.5 28 15.5 Q28 20 24 20 Z" fill="#C8D8E8" opacity=".9"/><g stroke="#7BA3C0" stroke-width="1.5" stroke-linecap="round"><line x1="13" y1="23" x2="11.5" y2="28"/><line x1="18" y1="23" x2="16.5" y2="28"/><line x1="23" y1="23" x2="21.5" y2="28"/></g></svg>`,
+    `<svg viewBox="0 0 36 36" fill="none"><path d="M10 19 Q7 19 7 15.5 Q7 12 10.5 11.5 Q11 7 15 7 Q17.5 7 19 9 Q20 7.5 22 7.5 Q25.5 7.5 25.5 11 Q28 11.5 28 14.5 Q28 19 24 19 Z" fill="#B8B8C8" opacity=".85"/><polyline points="16,22 14,27 18,26 16,31" stroke="#E8C840" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    `<svg viewBox="0 0 36 36" fill="none"><g stroke="#B8C8D0" stroke-width="2" stroke-linecap="round"><line x1="6" y1="13" x2="22" y2="13"/><line x1="8" y1="18" x2="28" y2="18"/><line x1="6" y1="23" x2="20" y2="23"/></g></svg>`,
+  ];
+
+  const THEMES = {
+    cream:       {name:'Cream Paper', zh:'奶油纸页', bg:'#F5F0E8', card:'#EDE5D8', text:'#2C1A0E', accent:'#C4A882', border:'#E8DDD0'},
+    'girls-dream':{name:"Girl's Dream",zh:'女孩梦境', bg:'#FDF0F4', card:'#EAF5F8', text:'#5A0A1A', accent:'#EF4067', border:'#84BECA'},
+    butterfly:   {name:'Butterfly',   zh:'蝴蝶',    bg:'#F0EDF5', card:'#E0D8EC', text:'#3A2E4A', accent:'#7B5F9E', border:'#C8C0D4'},
+    maple:       {name:'Maple Sugar', zh:'枫糖',    bg:'#F5EDE6', card:'#E8D5C4', text:'#3E1011', accent:'#8B553F', border:'#C0957B'},
+    amaranth:    {name:'Amaranth',    zh:'苋菜红',  bg:'#F8F4EE', card:'#E6EDE8', text:'#2A1020', accent:'#933B5B', border:'#AABAAE'},
+    dark:        {name:'Night',       zh:'夜晚',    bg:'#0D1117', card:'#141B24', text:'#E8EDF2', accent:'#7BA3C0', border:'#1E2D3D'},
+  };
+
+  function getDateKey(date, year) {
+    return `diary_${year}_${String(date.getMonth()+1).padStart(2,'0')}_${String(date.getDate()).padStart(2,'0')}`;
+  }
+  function getEntry(date, year) {
+    const raw = localStorage.getItem(getDateKey(date, year));
+    return raw ? JSON.parse(raw) : {html:'', mood:null};
+  }
+  function saveEntry(date, year, html, mood) {
+    localStorage.setItem(getDateKey(date, year), JSON.stringify({html, mood}));
+  }
+  function hasAnyEntry(date) {
+    for (let i=0;i<YEARS;i++){
+      const e=getEntry(date,new Date().getFullYear()+i);
+      if(e.html&&e.html.replace(/<[^>]*>/g,'').trim())return true;
+    }
+    return false;
+  }
+  function countWords(html) {
+    const text = html.replace(/<[^>]*>/g,' ').trim();
+    if(!text) return 0;
+    const cn = (text.match(/[\u4e00-\u9fa5]/g)||[]).length;
+    const en = text.replace(/[\u4e00-\u9fa5]/g,' ').trim().split(/\s+/).filter(Boolean).length;
+    return cn + en;
+  }
+
+  function render() {
+    document.getElementById('dateDisplay').textContent = `${DAYS[currentDate.getDay()].replace('星期','')}  ${currentDate.getDate()}`;
+    document.getElementById('monthYearDisplay').textContent = `${currentDate.getFullYear()}年 ${MONTHS[currentDate.getMonth()]}`;
+
+    const startYear = currentDate.getFullYear();
+    const tabsEl = document.getElementById('yearTabs');
+    tabsEl.innerHTML = '';
+    for(let i=0;i<YEARS;i++){
+      const y=startYear+i;
+      const btn=document.createElement('button');
+      btn.className='year-tab'+(i===0?' active':'');
+      btn.textContent=y; btn.dataset.year=y;
+      btn.onclick=()=>scrollToYear(y);
+      tabsEl.appendChild(btn);
+    }
+
+    const main=document.getElementById('mainContent');
+    main.innerHTML='';
+    const todayReal=new Date();
+
+    for(let i=0;i<YEARS;i++){
+      const year=startYear+i;
+      const entryDate=new Date(currentDate); entryDate.setFullYear(year);
+      const entry=getEntry(entryDate,year);
+
+      // strips are self-dividing, no separate divider needed
+
+      const isFuture=entryDate>todayReal;
+      const isThisYear=year===todayReal.getFullYear();
+      const placeholder=isFuture?'写给未来的自己……':'今天发生了什么……';
+      const wc=countWords(entry.html||'');
+
+      const card=document.createElement('div');
+      const texClass = currentTexture && currentTexture!=='none' ? ' tex-'+currentTexture : '';
+      card.className='entry-card'+(isThisYear?' current-year':'')+texClass; card.id=`year-${year}`;
+      const weekdayShort=['日','一','二','三','四','五','六'];
+      const wd = weekdayShort[entryDate.getDay()];
+      // Apply texture class to main
+      const mainEl = document.getElementById('mainContent');
+      mainEl.className = mainEl.className.replace(/tex-\S+/g,'').trim();
+      if(currentTexture && currentTexture!=='none') mainEl.classList.add('tex-'+currentTexture);
+      card.innerHTML=`
+        <div class="entry-year-col">
+          <div class="entry-year">${year}</div>
+          <div class="entry-year-label">周${wd}</div>
+          <div class="entry-weather-col" id="mood-${year}">
+            ${entry.mood!==null&&entry.mood!==undefined
+              ? `<div class="mood-dot selected" onclick="setMood(${year},${entry.mood},this)" title="${WEATHER[entry.mood]}">${MOODS[entry.mood]}</div>`
+              : `<div class="mood-dot" onclick="openWeatherPicker(${year},this)" title="记录天气" style="opacity:.25;border-style:dashed;">
+                  <svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+                 </div>`
+            }
+          </div>
+        </div>
+        <div class="entry-body" onclick="openEditor(${year})">
+          <div class="entry-preview" data-placeholder="${placeholder}">${entry.html||''}</div>
+          <div class="entry-header-right">
+            <button class="expand-btn" onclick="event.stopPropagation();openEditor(${year})" title="全屏编辑">›</button>
+          </div>
+        </div>`;
+      main.appendChild(card);
+    }
+  }
+
+  // Weather SVGs reused from MOODS array
+  const WEATHER_LABELS = ['晴','多云','雨','雷暴','雾'];
+
+  function buildWeatherOptions() {
+    const container = document.getElementById('weatherOptions');
+    container.innerHTML = MOODS.map((svg, idx) => `
+      <div class="weather-opt" id="wopt-${idx}" onclick="selectWeather(${idx})">
+        ${svg}
+        <span>${WEATHER_LABELS[idx]}</span>
+      </div>`).join('');
+  }
+
+  function toggleWeatherDropdown() {
+    const dd = document.getElementById('weatherDropdown');
+    dd.classList.toggle('open');
+    if (dd.classList.contains('open')) buildWeatherOptions();
+  }
+
+  function selectWeather(idx) {
+    if (editorYear === null) return;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+    const entry = getEntry(entryDate, editorYear);
+    const newMood = entry.mood === idx ? null : idx;
+    saveEntry(entryDate, editorYear, document.getElementById('editorArea').innerHTML, newMood);
+    updateWeatherDisplay(newMood);
+    document.getElementById('weatherDropdown').classList.remove('open');
+  }
+
+  function updateWeatherDisplay(moodIdx) {
+    const btn = document.getElementById('weatherPickerBtn');
+    const display = document.getElementById('weatherIconDisplay');
+    if (moodIdx !== null && moodIdx !== undefined) {
+      display.innerHTML = MOODS[moodIdx];
+      display.querySelector('svg').style.cssText = 'width:28px;height:28px;';
+      btn.classList.add('has-weather');
+    } else {
+      display.innerHTML = `<svg viewBox="0 0 36 36" fill="none" style="width:28px;height:28px;opacity:.35"><circle cx="18" cy="18" r="7" stroke="currentColor" stroke-width="1.5"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".4"><line x1="18" y1="5" x2="18" y2="9"/><line x1="18" y1="27" x2="18" y2="31"/><line x1="5" y1="18" x2="9" y2="18"/><line x1="27" y1="18" x2="31" y2="18"/></g></svg>`;
+      btn.classList.remove('has-weather');
+    }
+  }
+
+  function openEditor(year) {
+    editorYear = year;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(year);
+    const entry = getEntry(entryDate, year);
+    const isFuture = entryDate > new Date();
+
+    document.getElementById('editorDayNum').textContent = currentDate.getDate();
+    document.getElementById('editorMonthLabel').textContent = `${MONTHS[currentDate.getMonth()]}，${currentDate.getFullYear()}`;
+    document.getElementById('editorWeekdayLabel').textContent = DAYS[currentDate.getDay()];
+    document.getElementById('editorYearBadge').textContent = year === currentDate.getFullYear() ? '今年' : year + '年';
+
+    updateWeatherDisplay(entry.mood);
+
+    const area = document.getElementById('editorArea');
+    area.innerHTML = entry.html || '';
+    area.dataset.placeholder = isFuture ? '写给未来的自己……' : '写下今天……';
+    updateEditorWC();
+
+    // Restore guide mode preference
+    isGuideMode = localStorage.getItem('diary_guide_mode') === '1';
+    document.getElementById('guideToggleBtn').classList.toggle('active', isGuideMode);
+    document.getElementById('editorArea').style.display = isGuideMode ? 'none' : '';
+    document.getElementById('guidedMode').classList.toggle('active', isGuideMode);
+
+    if (isGuideMode) {
+      const guided = entry.guided || {};
+      GUIDE_KEYS.forEach(k => {
+        const el = document.getElementById(k);
+        if (el) { el.value = guided[k] || ''; autoResizeTA(el); }
+      });
+    }
+
+    attachGuideListeners();
+
+    document.getElementById('editorOverlay').classList.add('open');
+    document.getElementById('weatherDropdown').classList.remove('open');
+    setTimeout(() => { if (!isGuideMode) area.focus(); }, 200);
+  }
+
+  function focusEditor() {
+    const dd = document.getElementById('weatherDropdown');
+    if (!dd.classList.contains('open')) document.getElementById('editorArea').focus();
+  }
+
+  function closeEditor() {
+    if (editorYear !== null) {
+      const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+      const entry = getEntry(entryDate, editorYear);
+      saveEntry(entryDate, editorYear, document.getElementById('editorArea').innerHTML, entry.mood);
+      if (isGuideMode) saveGuided();
+    }
+    document.getElementById('editorOverlay').classList.remove('open');
+    document.getElementById('weatherDropdown').classList.remove('open');
+    editorYear = null;
+    render();
+  }
+
+  // GUIDED MODE
+  let isGuideMode = false;
+  const GUIDE_KEYS = ['gq1','gq2','gq3','gq4'];
+
+  function toggleGuideMode() {
+    isGuideMode = !isGuideMode;
+    document.getElementById('guideToggleBtn').classList.toggle('active', isGuideMode);
+    document.getElementById('editorArea').style.display = isGuideMode ? 'none' : '';
+    document.getElementById('guidedMode').classList.toggle('active', isGuideMode);
+
+    if (isGuideMode && editorYear !== null) {
+      // Load guided answers from storage
+      const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+      const entry = getEntry(entryDate, editorYear);
+      const guided = entry.guided || {};
+      GUIDE_KEYS.forEach(k => {
+        const el = document.getElementById(k);
+        if (el) { el.value = guided[k] || ''; autoResizeTA(el); }
+      });
+    }
+    localStorage.setItem('diary_guide_mode', isGuideMode ? '1' : '0');
+  }
+
+  function autoResizeTA(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function saveGuided() {
+    if (editorYear === null) return;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+    const entry = getEntry(entryDate, editorYear);
+    const guided = {};
+    GUIDE_KEYS.forEach(k => {
+      const el = document.getElementById(k);
+      if (el) guided[k] = el.value;
+    });
+    // merge guided into entry
+    localStorage.setItem(getDateKey(entryDate, editorYear), JSON.stringify({...entry, guided}));
+  }
+
+  // attach input listeners to guided textareas
+  function attachGuideListeners() {
+    GUIDE_KEYS.forEach(k => {
+      const el = document.getElementById(k);
+      if (!el) return;
+      let t;
+      el.addEventListener('input', () => {
+        autoResizeTA(el);
+        clearTimeout(t);
+        t = setTimeout(() => {
+          saveGuided();
+          const ind = document.getElementById('editorSaveInd');
+          ind.classList.add('visible');
+          setTimeout(()=>ind.classList.remove('visible'), 1500);
+        }, 800);
+      });
+    });
+  }
+
+  function updateEditorWC(){
+    const area=document.getElementById('editorArea');
+    const w=countWords(area.innerHTML||'');
+    document.getElementById('editorWC').textContent=w?w+'字':'';
+  }
+
+  document.getElementById('editorArea').addEventListener('input',()=>{
+    updateEditorWC();
+    clearTimeout(editorSaveTimer);
+    editorSaveTimer=setTimeout(()=>{
+      if(editorYear===null)return;
+      const entryDate=new Date(currentDate); entryDate.setFullYear(editorYear);
+      const entry=getEntry(entryDate,editorYear);
+      saveEntry(entryDate,editorYear,document.getElementById('editorArea').innerHTML,entry.mood);
+      const ind=document.getElementById('editorSaveInd');
+      ind.classList.add('visible');
+      setTimeout(()=>ind.classList.remove('visible'),1500);
+    },800);
+  });
+
+  function fmt(cmd,val){document.getElementById('editorArea').focus();document.execCommand(cmd,false,val||null);}
+  function fmtToggle(cmd,btnId){
+    document.getElementById('editorArea').focus();
+    document.execCommand(cmd,false,null);
+    document.getElementById(btnId).classList.toggle('active',document.queryCommandState(cmd));
+  }
+  ['keyup','mouseup'].forEach(ev=>document.getElementById('editorArea').addEventListener(ev,()=>{
+    ['tbBold','tbItalic','tbUnder'].forEach(id=>{
+      const cmd=id==='tbBold'?'bold':id==='tbItalic'?'italic':'underline';
+      document.getElementById(id).classList.toggle('active',document.queryCommandState(cmd));
+    });
+  }));
+
+  function openWeatherPicker(year, el) {
+    // open editor which has weather picker
+    openEditor(year);
+    setTimeout(() => toggleWeatherDropdown(), 300);
+  }
+
+  function setMood(year,moodIdx,el){
+    const entryDate=new Date(currentDate); entryDate.setFullYear(year);
+    const entry=getEntry(entryDate,year);
+    const newMood=entry.mood===moodIdx?null:moodIdx;
+    saveEntry(entryDate,year,entry.html,newMood);
+    el.closest('.mood-row').querySelectorAll('.mood-dot').forEach((d,i)=>d.classList.toggle('selected',i===newMood));
+  }
+  function setMoodEditor(moodIdx,el){
+    if(editorYear===null)return;
+    const entryDate=new Date(currentDate); entryDate.setFullYear(editorYear);
+    const entry=getEntry(entryDate,editorYear);
+    const newMood=entry.mood===moodIdx?null:moodIdx;
+    saveEntry(entryDate,editorYear,entry.html,newMood);
+    document.getElementById('editorMoodRow').querySelectorAll('.mood-dot').forEach((d,i)=>d.classList.toggle('selected',i===newMood));
+  }
+
+  function changeDay(delta){currentDate.setDate(currentDate.getDate()+delta);render();}
+  function goToday(){currentDate=new Date();render();}
+  function scrollToYear(year){
+    const el=document.getElementById(`year-${year}`);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+    document.querySelectorAll('.year-tab').forEach(t=>t.classList.toggle('active',parseInt(t.dataset.year)===year));
+  }
+
+  function openCalendar(){calViewDate=new Date(currentDate);renderCalendar();document.getElementById('calOverlay').classList.add('open');}
+  function closeOverlay(id){document.getElementById(id).classList.remove('open');}
+  function handleOverlayClick(e,id){if(e.target===document.getElementById(id))closeOverlay(id);}
+  function calChangeMonth(delta){calViewDate.setMonth(calViewDate.getMonth()+delta);renderCalendar();}
+  function renderCalendar(){
+    const y=calViewDate.getFullYear(),m=calViewDate.getMonth();
+    document.getElementById('calMonthLabel').textContent=`${y}年 ${MONTHS[m]}`;
+    const grid=document.getElementById('calGrid'); grid.innerHTML='';
+    const firstDay=new Date(y,m,1).getDay(),daysInMonth=new Date(y,m+1,0).getDate();
+    const todayReal=new Date();
+    for(let i=0;i<firstDay;i++){const el=document.createElement('div');el.className='cal-day empty';grid.appendChild(el);}
+    for(let d=1;d<=daysInMonth;d++){
+      const el=document.createElement('div');el.className='cal-day';el.textContent=d;
+      const td=new Date(y,m,d);
+      if(todayReal.getFullYear()===y&&todayReal.getMonth()===m&&todayReal.getDate()===d)el.classList.add('today');
+      if(currentDate.getFullYear()===y&&currentDate.getMonth()===m&&currentDate.getDate()===d)el.classList.add('selected');
+      if(hasAnyEntry(td))el.classList.add('has-entry');
+      el.onclick=()=>{currentDate=new Date(y,m,d);render();closeOverlay('calOverlay');};
+      grid.appendChild(el);
+    }
+  }
+
+  function openThemes(){buildThemeGrid();initTextureUI();document.getElementById('themeOverlay').classList.add('open');}
+  // TEXTURE
+  let currentTexture = localStorage.getItem('diary_texture') || 'none';
+
+  function setTexture(tex) {
+    currentTexture = tex;
+    localStorage.setItem('diary_texture', tex);
+    applyTextureToCards();
+    document.querySelectorAll('.tex-opt').forEach(el => {
+      el.classList.toggle('active', el.id === 'tex-' + tex);
+    });
+  }
+
+  function applyTextureToCards() {
+    const main = document.getElementById('mainContent');
+    if (!main) return;
+    main.classList.remove('tex-lines','tex-grid','tex-dots');
+    if (currentTexture && currentTexture !== 'none') main.classList.add('tex-' + currentTexture);
+  }
+
+  function initTextureUI() {
+    document.querySelectorAll('.tex-opt').forEach(el => {
+      el.classList.toggle('active', el.id === 'tex-' + currentTexture);
+    });
+  }
+
+  function applyTheme(key){
+    currentTheme=key; localStorage.setItem('diary_theme',key);
+    if(key==='dark'){isDark=true;document.getElementById('darkToggle').checked=true;document.documentElement.setAttribute('data-theme','dark');}
+    else{document.documentElement.setAttribute('data-theme',key==='cream'?'':key);}
+    document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active',s.dataset.key===key));
+  }
+  function toggleDark(on){
+    isDark=on;
+    if(on){currentTheme='dark';localStorage.setItem('diary_theme','dark');document.documentElement.setAttribute('data-theme','dark');}
+    else{currentTheme='cream';localStorage.setItem('diary_theme','cream');document.documentElement.setAttribute('data-theme','');}
+    document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('active',s.dataset.key===currentTheme));
+  }
+  function buildThemeGrid(){
+    const grid=document.getElementById('themeGrid'); grid.innerHTML='';
+    Object.entries(THEMES).forEach(([key,t])=>{
+      const el=document.createElement('div');
+      el.className='theme-swatch'+(key===currentTheme?' active':'');
+      el.dataset.key=key;
+      el.innerHTML=`
+        <div class="swatch-top" style="background:${t.bg};border-bottom-color:${t.border};">
+          <div class="swatch-logo" style="color:${t.text};">five<span style="color:${t.accent};"> · </span>year</div>
+          <div class="swatch-bar" style="background:${t.text};"></div>
+          <div class="swatch-bar2" style="background:${t.text};"></div>
+        </div>
+        <div class="swatch-bottom" style="background:${t.card};">
+          <div class="swatch-dots">
+            <div class="swatch-dot" style="border-color:${t.accent};background:${t.bg};"></div>
+            <div class="swatch-dot" style="border-color:${t.border};background:${t.bg};"></div>
+          </div>
+          <div class="swatch-name" style="color:${t.text};">${t.name}<br>${t.zh}</div>
+        </div>`;
+      el.onclick=()=>applyTheme(key);
+      grid.appendChild(el);
+    });
+  }
+
+  window.addEventListener('scroll',()=>{
+    document.querySelectorAll('.entry-card').forEach(card=>{
+      const rect=card.getBoundingClientRect();
+      if(rect.top<window.innerHeight*0.5&&rect.bottom>0){
+        const year=parseInt(card.id.replace('year-',''));
+        document.querySelectorAll('.year-tab').forEach(t=>t.classList.toggle('active',parseInt(t.dataset.year)===year));
+      }
+    });
+  });
+  document.addEventListener('click', e => {
+    const dd = document.getElementById('weatherDropdown');
+    const btn = document.getElementById('weatherPickerBtn');
+    if (dd && btn && !dd.contains(e.target) && !btn.contains(e.target)) {
+      dd.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&document.getElementById('editorOverlay').classList.contains('open'))closeEditor();
+  });
+
+  applyTheme(currentTheme);
+  render();
+  setTimeout(applyTextureToCards, 100);
+
+  // Fill remaining height after render
+  function resizeStrips() {
+    applyTextureToCards();
+    const main = document.getElementById('mainContent');
+    if (!main) return;
+    const strips = main.querySelectorAll('.entry-card');
+    if (!strips.length) return;
+    // Reset first
+    strips.forEach(s => { s.style.height = ''; s.style.flex = '1'; });
+  }
+  window.addEventListener('resize', resizeStrips);
+  setTimeout(resizeStrips, 100);
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('SW registered');
+      }).catch(err => {
+        console.log('SW failed:', err);
+      });
+    });
+  }
+</script>
+</body>
+</html>  /* WIDE MARGIN LAYOUT */
+  .main{padding:0;display:flex;flex-direction:column;flex:1;overflow:hidden;max-width:none;min-height:0;}
+
+  .entry-card{flex:1;min-height:0;display:flex;border-bottom:1px solid var(--border);overflow:hidden;}
+  .entry-card:last-child{border-bottom:none;}
+  .entry-card.current-year{background:rgba(0,0,0,.025);}
+  [data-theme="dark"] .entry-card.current-year{background:rgba(255,255,255,.025);}
+
+  /* LEFT MARGIN */
+  .entry-year-col{width:56px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 4px 0;gap:3px;}
+  .entry-card.current-year .entry-year-col{border-right-color:var(--accent);}
+  .entry-year{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--accent);line-height:1;}
+  .entry-year-label{font-size:9px;color:var(--text-muted);letter-spacing:.06em;font-family:'Lato',sans-serif;}
+  .entry-weather-col{margin-top:4px;}
+  .mood-dot{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;background:none;}
+  .mood-dot:hover{border-color:var(--accent);}
+  .mood-dot.selected{border-color:var(--accent);}
+  .mood-dot svg{width:16px;height:16px;}
+
+  /* RIGHT AREA */
+  .entry-body{flex:1;position:relative;overflow:hidden;cursor:pointer;}
+  .entry-texture{position:absolute;inset:0;pointer-events:none;z-index:0;}
+  .entry-header-right{position:absolute;top:8px;right:6px;z-index:2;}
+  .expand-btn{background:none;border:none;color:var(--text-muted);width:22px;height:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:color .15s;}
+  .expand-btn:hover{color:var(--accent);}
+  .entry-preview{position:absolute;inset:0;padding:9px 30px 8px 13px;font-family:'Noto Serif SC','Cormorant Garamond',serif;font-size:13px;font-weight:300;line-height:1.8;color:var(--text-primary);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;z-index:1;}
+  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--border);font-style:italic;font-size:12px;}
+
+  /* TEXTURES */
+  .tex-lines .entry-texture{background-image:repeating-linear-gradient(to bottom,transparent,transparent 28px,var(--border-light) 28px,var(--border-light) 29px);}
+  .tex-grid .entry-texture{background-image:repeating-linear-gradient(to bottom,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px),repeating-linear-gradient(to right,transparent,transparent 27px,var(--border-light) 27px,var(--border-light) 28px);opacity:.65;}
+  .tex-dots .entry-texture{background-image:radial-gradient(circle,var(--border) 1.2px,transparent 1.2px);background-size:18px 18px;opacity:.8;}
+
+  .word-count{display:none;}
+  .years-divider{display:none;}
+  .divider-line{display:none;}
+
+
