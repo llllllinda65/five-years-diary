@@ -731,6 +731,10 @@
   .font-list{padding:0 16px 24px;display:flex;flex-direction:column;gap:12px;}
 
   /* 字号滑条 */
+  .preview-size-tiers{display:flex;gap:8px;margin:4px 0 0;}
+  .psz-btn{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 0;font-family:'Noto Serif SC',serif;font-size:13px;color:var(--text-muted);cursor:pointer;transition:all .15s;}
+  .psz-btn:hover{border-color:var(--accent);color:var(--text-primary);}
+  .psz-btn.active{background:var(--accent);border-color:var(--accent);color:var(--bg);}
   .font-size-section{
     margin:0 16px 20px;
     background:var(--bg-card);
@@ -2288,8 +2292,13 @@
         <span class="font-size-label-text">主页预览字号</span>
         <span class="font-size-value" id="previewFontSizeVal">12 px</span>
       </div>
-      <input type="range" class="font-size-slider" id="previewFontSizeSlider" min="10" max="18" step="1" value="12" oninput="setPreviewFontSize(this.value)">
-      <div class="font-size-hint">10 ~ 18 px · 字越大每条预览能看到的字数越少</div>
+      <div class="preview-size-tiers" id="previewSizeTiers">
+        <button class="psz-btn" data-size="10" onclick="setPreviewFontSize(10)">小</button>
+        <button class="psz-btn" data-size="12" onclick="setPreviewFontSize(12)">中</button>
+        <button class="psz-btn" data-size="15" onclick="setPreviewFontSize(15)">大</button>
+        <button class="psz-btn" data-size="18" onclick="setPreviewFontSize(18)">超大</button>
+      </div>
+      <div class="font-size-hint">字越大每条预览能看到的字数越少</div>
     </div>
   </div>
 
@@ -4606,7 +4615,15 @@
     val = parseInt(val);
     localStorage.setItem('diary_preview_font_size', val);
     document.documentElement.style.setProperty('--preview-font-size', val + 'px');
-    document.getElementById('previewFontSizeVal').textContent = val + ' px';
+    const valEl = document.getElementById('previewFontSizeVal');
+    if(valEl) valEl.textContent = val + ' px';
+    // 高亮当前档位（按最近档匹配，处理旧版滑条留下的非整档值）
+    const tierBtns = document.querySelectorAll('#previewSizeTiers .psz-btn');
+    if(tierBtns.length){
+      const tiers = Array.from(tierBtns).map(b => parseInt(b.dataset.size));
+      const closest = tiers.reduce((a,b) => Math.abs(b-val) < Math.abs(a-val) ? b : a);
+      tierBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.size) === closest));
+    }
   }
 
   function openFont(){
@@ -4616,8 +4633,7 @@
     const previewSize = parseInt(localStorage.getItem('diary_preview_font_size') || '12');
     document.getElementById('editorFontSizeSlider').value = editorSize;
     document.getElementById('editorFontSizeVal').textContent = editorSize + ' px';
-    document.getElementById('previewFontSizeSlider').value = previewSize;
-    document.getElementById('previewFontSizeVal').textContent = previewSize + ' px';
+    setPreviewFontSize(previewSize);
     document.getElementById('fontOverlay').classList.add('open');
   }
   function closeFont(){
