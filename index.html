@@ -1558,39 +1558,40 @@
   /* TOOLBAR */
   /* 键盘上方紧凑药丸条 */
   .editor-toolbar{
-    position:fixed;
-    left:0;right:0;
-    bottom:0;
-    z-index:300;
+    position:sticky;
+    top:0;
+    z-index:50;
     display:flex;
+    justify-content:space-around;
     align-items:center;
-    justify-content:center;
-    gap:8px;
-    padding:8px 12px;
-    padding-bottom:calc(8px + env(safe-area-inset-bottom));
-    background:transparent;
-    pointer-events:none;
+    padding:14px 24px 12px;
+    margin:0 -24px 8px;
+    border-bottom:1px solid var(--border-light, var(--border));
+    background:var(--bg);
   }
   .editor-toolbar > *{pointer-events:auto;}
   .pill-btn{
-    display:inline-flex;align-items:center;gap:6px;
-    padding:9px 16px;
-    background:rgba(245,237,230,0.85);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-    border:0.5px solid rgba(0,0,0,0.08);
-    border-radius:999px;
+    background:none;
+    border:none;
+    padding:2px 4px;
     font-family:'Noto Serif SC',serif;
-    font-size:13px;
-    color:var(--text-primary);
+    font-size:14px;
+    color:var(--text-muted);
+    letter-spacing:.15em;
     cursor:pointer;
-    box-shadow:0 2px 10px rgba(0,0,0,0.06);
-    transition:transform .1s ease;
-    flex-shrink:0;
+    position:relative;
+    transition:color .15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .pill-btn svg{display:none;}  /* 隐藏图标 */
+  .pill-btn:hover,
+  .pill-btn.active{color:var(--text-primary);font-weight:500;}
+  .pill-btn.active::after{
+    content:'';
+    position:absolute;left:0;right:0;bottom:-3px;
+    height:1.5px;background:var(--text-primary);
   }
   .pill-btn:active{transform:scale(0.95);}
-  .pill-btn.active{background:var(--accent);color:var(--bg);}
-  [data-theme="maple"] .pill-btn{background:rgba(245,237,230,0.9);}
 
   /* 格式抽屉 */
   .fmt-sheet{
@@ -2061,6 +2062,60 @@
   /* GUIDED QUESTIONS */
   .guided-mode { display:none; flex-direction:column; gap:0; }
   .guided-mode.active { display:flex; }
+
+  /* IMAGE MODE · 独立插图页面 */
+  .image-mode { display:none; flex-direction:column; gap:14px; padding-top:8px; }
+  .image-mode.active { display:flex; }
+  .image-mode-grid {
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:6px;
+  }
+  .image-mode-grid:empty { display:none; }
+  .image-mode-grid .img-cell {
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:6px;
+    overflow:hidden;
+    background:var(--card);
+    border:1px solid var(--border);
+  }
+  .image-mode-grid .img-cell img {
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .image-mode-grid .img-cell .img-del {
+    position:absolute;top:4px;right:4px;
+    width:24px;height:24px;border-radius:50%;
+    background:rgba(0,0,0,.55);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;line-height:1;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .image-mode-grid .img-cell.img-drag-over {
+    box-shadow:0 0 0 2px var(--accent);
+  }
+  .image-mode-add {
+    align-self:center;
+    display:flex;align-items:center;gap:8px;
+    padding:10px 18px;
+    border:1.4px solid var(--border);
+    border-radius:24px;
+    background:transparent;
+    color:var(--text-muted);
+    cursor:pointer;
+    font-family:inherit;
+    font-size:13px;
+    margin-top:6px;
+    transition:all .2s;
+  }
+  .image-mode-add:hover { color:var(--accent); border-color:var(--accent); }
+  /* 进入插图模式时，隐藏 editorArea / 工具栏药丸 / 旧网格 / 引导 */
+  .editor-overlay.image-on #editorArea,
+  .editor-overlay.image-on #editorImageGrid,
+  .editor-overlay.image-on #guidedMode,
+  .editor-overlay.image-on #pillFormat,
+  .editor-overlay.image-on #pillColor,
+  .editor-overlay.image-on #pillGuide { display:none !important; }
   .guided-q {
     padding:20px 0 0;
     border-top:1px solid var(--border-light);
@@ -2388,26 +2443,8 @@
 
   <div class="editor-divider"></div>
 
-  <!-- 键盘上方紧凑药丸条 -->
-  <div class="editor-toolbar">
-    <button class="pill-btn" id="pillGuide" onclick="toggleGuideMode()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4.5 2 7-5.5-4-5.5 4 2-7L3 9h7z"/></svg>
-      <span>引导</span>
-    </button>
-    <button class="pill-btn" id="pillImage" onclick="triggerImagePicker()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
-      <span>插图</span>
-    </button>
-    <button class="pill-btn" id="pillFormat" onclick="openFormatSheet()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="5" x2="12" y2="20"/></svg>
-      <span>格式</span>
-    </button>
-    <button class="pill-btn" id="pillColor" onclick="openColorSheet()">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 110-20 5.5 5.5 0 015.5 5.5c0 1.4-1.1 2.5-2.5 2.5h-2c-1.4 0-2.5 1.1-2.5 2.5 0 .5.2 1 .5 1.4.4.5 1 1.1 1 1.6 0 1.4-1.1 2.5-2.5 2.5z"/></svg>
-      <span>颜色</span>
-    </button>
-    <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none;" onchange="handleImageInsert(event)">
-  </div>
+  <!-- 隐藏的图片输入（药丸条已挪到顶部） -->
+  <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none;" onchange="handleImageInsert(event)">
 
   <!-- 格式抽屉（藏在键盘上方浮起来） -->
   <div class="fmt-sheet" id="formatSheet">
@@ -2479,6 +2516,27 @@
   <!-- EDITOR BODY -->
   <div class="editor-scroll" onclick="focusEditor()">
     <div class="editor-content">
+
+      <!-- 顶部药丸条（永远在线，sticky 跟随滚动） -->
+      <div class="editor-toolbar" onclick="event.stopPropagation()">
+        <button class="pill-btn" id="pillGuide" onclick="toggleGuideMode()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4.5 2 7-5.5-4-5.5 4 2-7L3 9h7z"/></svg>
+          <span>引导</span>
+        </button>
+        <button class="pill-btn" id="pillImage" onclick="toggleImageMode()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+          <span>插图</span>
+        </button>
+        <button class="pill-btn" id="pillFormat" onclick="openFormatSheet()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="5" x2="12" y2="20"/></svg>
+          <span>格式</span>
+        </button>
+        <button class="pill-btn" id="pillColor" onclick="openColorSheet()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 110-20 5.5 5.5 0 015.5 5.5c0 1.4-1.1 2.5-2.5 2.5h-2c-1.4 0-2.5 1.1-2.5 2.5 0 .5.2 1 .5 1.4.4.5 1 1.1 1 1.6 0 1.4-1.1 2.5-2.5 2.5z"/></svg>
+          <span>颜色</span>
+        </button>
+      </div>
+
       <div class="editor-wordcount" id="editorWC"></div>
 
       <!-- 每日一问 -->
@@ -2497,6 +2555,15 @@
 
       <!-- 图片网格（永远在文字下方） -->
       <div class="editor-img-grid" id="editorImageGrid"></div>
+
+      <!-- IMAGE MODE · 独立插图大网格页面 -->
+      <div class="image-mode" id="imageMode">
+        <div class="image-mode-grid" id="imageModeGrid"></div>
+        <button class="image-mode-add" onclick="triggerImagePicker()">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>添加照片</span>
+        </button>
+      </div>
 
       <!-- GUIDED MODE -->
       <div class="guided-mode" id="guidedMode">
@@ -3338,6 +3405,10 @@
       if (isGuideMode) saveGuided();
     }
     document.getElementById('editorOverlay').classList.remove('open');
+    document.getElementById('editorOverlay').classList.remove('image-on');
+    document.getElementById('imageMode')?.classList.remove('active');
+    document.getElementById('pillImage')?.classList.remove('active');
+    isImageMode = false;
     document.getElementById('weatherDropdown').classList.remove('open');
     document.getElementById('moreMenu')?.classList.remove('open');
     resetEditHistory();
@@ -3392,6 +3463,116 @@
       });
     }
     localStorage.setItem('diary_guide_mode', isGuideMode ? '1' : '0');
+  }
+
+  // IMAGE MODE · 独立插图页面
+  let isImageMode = false;
+  function toggleImageMode(){
+    isImageMode = !isImageMode;
+    document.getElementById('pillImage')?.classList.toggle('active', isImageMode);
+    document.getElementById('editorArea').style.display = isImageMode ? 'none' : (isGuideMode ? 'none' : '');
+    document.getElementById('imageMode').classList.toggle('active', isImageMode);
+    document.getElementById('editorOverlay').classList.toggle('image-on', isImageMode);
+    if(isImageMode){
+      // 进入时刷新一下大网格内容
+      renderImageModeGrid();
+      // 收键盘
+      if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    } else {
+      // 退出时同步把当前 entry.images 也渲染到下方旧网格（保持兼容）
+      if(editorYear !== null){
+        const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+        const entry = getEntry(entryDate, editorYear);
+        renderImageGrid(entry.images || [], false);
+      }
+    }
+  }
+
+  function renderImageModeGrid(){
+    const grid = document.getElementById('imageModeGrid');
+    if(!grid || editorYear === null) return;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+    const entry = getEntry(entryDate, editorYear);
+    const images = entry.images || [];
+    grid.innerHTML = images.map((src, i) => `
+      <div class="img-cell" data-idx="${i}">
+        <img src="${src}" alt="">
+        <div class="img-del" onclick="event.stopPropagation();deleteImageInMode(${i})">×</div>
+      </div>
+    `).join('');
+    bindImageModeDrag();
+  }
+
+  function deleteImageInMode(idx){
+    if(editorYear === null) return;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+    const entry = getEntry(entryDate, editorYear);
+    const images = (entry.images || []).slice();
+    images.splice(idx, 1);
+    const html = document.getElementById('editorArea').innerHTML;
+    saveEntry(entryDate, editorYear, html, entry.mood, images);
+    renderImageModeGrid();
+    pushSnapshot();
+  }
+
+  // 拖拽重排（长按拖动）
+  function bindImageModeDrag(){
+    const grid = document.getElementById('imageModeGrid');
+    if(!grid) return;
+    let dragIdx = null;
+    let dragEl = null;
+    grid.querySelectorAll('.img-cell').forEach(cell => {
+      let pressTimer = null;
+      cell.addEventListener('touchstart', (e) => {
+        if(e.target.closest('.img-del')) return;
+        pressTimer = setTimeout(() => {
+          dragIdx = parseInt(cell.dataset.idx);
+          dragEl = cell;
+          cell.style.opacity = '.5';
+          if(navigator.vibrate) navigator.vibrate(30);
+        }, 350);
+      }, {passive:true});
+      cell.addEventListener('touchmove', (e) => {
+        if(pressTimer && !dragEl) { clearTimeout(pressTimer); pressTimer = null; }
+        if(!dragEl) return;
+        e.preventDefault();
+        const t = e.touches[0];
+        const target = document.elementFromPoint(t.clientX, t.clientY)?.closest('.img-cell');
+        grid.querySelectorAll('.img-cell').forEach(c => c.classList.remove('img-drag-over'));
+        if(target && target !== dragEl) target.classList.add('img-drag-over');
+      }, {passive:false});
+      cell.addEventListener('touchend', (e) => {
+        if(pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+        if(!dragEl) return;
+        const t = e.changedTouches[0];
+        const target = document.elementFromPoint(t.clientX, t.clientY)?.closest('.img-cell');
+        if(target && target !== dragEl){
+          const fromIdx = dragIdx;
+          const toIdx = parseInt(target.dataset.idx);
+          reorderImage(fromIdx, toIdx);
+        }
+        dragEl.style.opacity = '';
+        dragEl = null; dragIdx = null;
+        grid.querySelectorAll('.img-cell').forEach(c => c.classList.remove('img-drag-over'));
+      });
+      cell.addEventListener('touchcancel', () => {
+        if(pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+        if(dragEl){ dragEl.style.opacity = ''; dragEl = null; dragIdx = null; }
+      });
+    });
+  }
+
+  function reorderImage(fromIdx, toIdx){
+    if(editorYear === null) return;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+    const entry = getEntry(entryDate, editorYear);
+    const images = (entry.images || []).slice();
+    const [moved] = images.splice(fromIdx, 1);
+    images.splice(toIdx, 0, moved);
+    const html = document.getElementById('editorArea').innerHTML;
+    saveEntry(entryDate, editorYear, html, entry.mood, images);
+    renderImageModeGrid();
+    pushSnapshot();
   }
 
   function autoResizeTA(el) {
@@ -3672,15 +3853,15 @@
   (function(){
     if(!window.visualViewport) return;
     function update(){
-      const tb = document.querySelector('.editor-overlay.open .editor-toolbar');
+      // toolbar 已 sticky 在编辑器顶部 · 不再跟键盘走
+      // 只让格式/颜色抽屉跟键盘走
       const sheets = document.querySelectorAll('.editor-overlay.open .fmt-sheet');
       const vv = window.visualViewport;
       const kbOffset = window.innerHeight - vv.height - vv.offsetTop;
-      const els = [tb, ...sheets].filter(Boolean);
-      els.forEach(el => {
+      sheets.forEach(el => {
         if(kbOffset > 30){
           el.style.bottom = kbOffset + 'px';
-          el.style.paddingBottom = el.classList.contains('fmt-sheet') ? '14px' : '8px';
+          el.style.paddingBottom = '14px';
         } else {
           el.style.bottom = '0';
           el.style.paddingBottom = '';
@@ -4190,6 +4371,8 @@
 
     // 重新渲染图片网格（未保存态 → × 直接可见）
     renderImageGrid(finalImages, false);
+    // 如果在插图模式下 · 同时刷新大网格
+    if(isImageMode) renderImageModeGrid();
     pushSnapshot();
 
     // 收起 iOS 软键盘 + 滚动到图片网格位置 · 让用户能看到刚插进去的图
