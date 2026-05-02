@@ -122,39 +122,54 @@
      LATTE 主题 → 版型 6 老书报刊打字机
      ═══════════════════════════════════════════ */
   [data-theme="latte"] .date-nav{
-    padding:14px 20px 6px;
+    padding:14px 20px 10px;
     border-bottom:3px double var(--text-primary);
-    flex-direction:column;
+    flex-direction:row;
     align-items:center;
-    gap:4px;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+    position:relative;
   }
+  /* mast 占满整行在最上 */
   [data-theme="latte"] .date-nav::before{
     content:'The Five Year Diary';
     font-family:'IM Fell English',serif;
-    font-size:22px;
+    font-size:24px;
     color:var(--text-primary);
     letter-spacing:.04em;
     width:100%;
     text-align:center;
+    order:-1;
+    margin-bottom:4px;
   }
-  [data-theme="latte"] .date-nav::after{
-    content:'EST. MMXXII · A LEAF IN A LIFE';
-    font-family:'Special Elite',monospace;
-    font-size:9px;
-    color:var(--text-primary);
-    letter-spacing:.4em;
-    margin-top:4px;
-  }
+  /* 日期居中、箭头贴日期 */
   [data-theme="latte"] .date-display{
     font-family:'Special Elite',monospace !important;
     font-size:14px !important;
     letter-spacing:.2em;
     color:var(--text-primary);
     text-transform:uppercase;
-    margin-top:4px;
   }
-  [data-theme="latte"] .nav-btn,
+  [data-theme="latte"] .nav-btn{
+    border:none !important;
+    width:auto !important;
+    height:auto !important;
+    background:none !important;
+    font-family:'Special Elite',monospace !important;
+    font-size:18px !important;
+    color:var(--text-muted) !important;
+    padding:4px 6px !important;
+  }
+  [data-theme="latte"] .nav-btn:hover{
+    color:var(--text-primary) !important;
+  }
+  /* 今天按钮浮到右侧不影响中央居中 */
   [data-theme="latte"] .today-btn{
+    position:absolute !important;
+    right:20px;
+    top:50%;
+    transform:translateY(calc(50% - 4px));
     font-family:'Special Elite',monospace;
     font-size:11px;
     color:var(--text-muted);
@@ -403,15 +418,18 @@
   .menu-btn span:nth-child(2){width:14px;}
   /* 视图切换按钮 */
   .view-toggle-btn{
-    background:none;border:1px solid var(--border);
-    width:36px;height:36px;border-radius:50%;
+    background:none;border:none;
+    padding:6px 8px;
     display:flex;align-items:center;justify-content:center;
     color:var(--text-muted);cursor:pointer;
+    font-family:'DM Mono',monospace;
+    font-size:13px;
+    letter-spacing:.05em;
     transition:all .2s;
   }
-  .view-toggle-btn:hover{color:var(--accent);border-color:var(--accent);}
+  .view-toggle-btn:hover{color:var(--accent);}
   .view-toggle-btn.active{
-    background:var(--accent);color:var(--bg);border-color:var(--accent);
+    color:var(--accent);
   }
   .view-toggle-btn svg{width:16px;height:16px;}
   .menu-btn span:nth-child(3){width:10px;}
@@ -540,19 +558,20 @@
 
   /* DATE NAV */
   .date-nav{padding:14px 24px 0;display:flex;align-items:center;gap:18px;flex-shrink:0;}
-  .date-display{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;cursor:pointer;transition:opacity .15s;user-select:none;-webkit-tap-highlight-color:transparent;}
+  .date-display{font-family:'Noto Serif SC',serif;font-size:47px;font-weight:300;cursor:pointer;transition:opacity .15s;user-select:none;-webkit-tap-highlight-color:transparent;}
   .date-display:hover{opacity:.7;}
   .date-display:active{opacity:.5;}
   .date-sub{font-family:'Noto Serif SC',serif;font-size:13px;font-weight:300;letter-spacing:.08em;color:var(--text-muted);display:block;margin-top:4px;}
-  .nav-btn{background:none;border:1px solid var(--border);color:var(--text-muted);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
-  .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .today-btn{margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-muted);padding:7px 16px;border-radius:20px;cursor:pointer;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;}
-  .today-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .nav-btn{background:none;border:none;color:var(--text-muted);padding:6px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:18px;display:flex;align-items:center;justify-content:center;transition:color .2s;flex-shrink:0;letter-spacing:0;}
+  .nav-btn:hover{color:var(--accent);}
+  .nav-btn svg{width:16px;height:16px;}
+  .today-btn{margin-left:auto;background:none;border:none;color:var(--text-muted);padding:6px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;transition:color .2s;}
+  .today-btn:hover{color:var(--accent);}
 
   /* YEAR TABS */
   .year-tabs{display:none;}
   .year-tabs::-webkit-scrollbar{display:none;}
-  .year-tab{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;font-family:'Lato',sans-serif;font-size:11px;letter-spacing:.06em;white-space:nowrap;transition:all .2s;flex-shrink:0;}
+  .year-tab{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-muted);cursor:pointer;font-family:'Lato',sans-serif;font-size:12px;letter-spacing:.06em;white-space:nowrap;transition:all .2s;flex-shrink:0;}
   .year-tab.active,.year-tab:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 
   /* MAIN */
@@ -644,8 +663,8 @@
   /* left margin */
   .entry-year-col{width:56px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:10px 4px 0;gap:4px;}
   .entry-card.current-year .entry-year-col{border-right-color:var(--accent);}
-  .entry-year{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--accent);line-height:1;}
-  .entry-year-label{font-size:9px;color:var(--text-muted);letter-spacing:.04em;font-family:'Lato',sans-serif;}
+  .entry-year{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--accent);line-height:1;}
+  .entry-year-label{font-size:10px;color:var(--text-muted);letter-spacing:.04em;font-family:'Lato',sans-serif;}
   /* 周几+小天气并排 */
   .wd-weather-row{display:flex;align-items:center;gap:3px;line-height:1;}
   .weather-inline{display:inline-flex;cursor:pointer;transition:transform .15s;}
@@ -678,7 +697,7 @@
   .entry-preview{
     position:absolute;inset:0;padding:7px 12px;
     font-family:'Noto Serif SC','Cormorant Garamond',serif;
-    font-size:var(--preview-font-size, 12px);font-weight:300;line-height:1.55;color:var(--text-primary);
+    font-size:var(--preview-font-size, 13px);font-weight:300;line-height:1.55;color:var(--text-primary);
     overflow-y:auto;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;z-index:1;
     /* 细滚动条 */
@@ -689,7 +708,7 @@
   .entry-preview::-webkit-scrollbar-track{background:transparent;}
   .entry-preview::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
   .entry-preview::-webkit-scrollbar-thumb:hover{background:var(--accent);}
-  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--border);font-style:italic;font-size:11px;}
+  .entry-preview:empty::before{content:attr(data-placeholder);color:var(--border);font-style:italic;font-size:12px;}
 
   /* texture overlay — applied via JS */
   .entry-body::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;}
@@ -2179,7 +2198,7 @@
 
   @media(max-width:600px){
     .header,.date-nav{padding-left:16px;padding-right:16px;}
-    .date-display{font-size:36px;}
+    .date-display{font-size:37px;}
     .editor-scroll{padding:24px 18px;}
     .editor-nav,.editor-toolbar{padding-left:18px;padding-right:18px;}
     .theme-grid{grid-template-columns:1fr 1fr;}
@@ -2228,9 +2247,7 @@
       <span class="en">Five Year Diary</span>
     </div>
   </div>
-  <button class="view-toggle-btn" id="viewToggleBtn" onclick="toggleView()" aria-label="切换视图" title="切换视图">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M8 4L4 8L8 12M4 8H20M16 12L20 16L16 20M20 16H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  </button>
+  <button class="view-toggle-btn" id="viewToggleBtn" onclick="toggleView()" aria-label="切换视图" title="切换视图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10v18l-5-3-5 3z"/></svg></button>
 </header>
 
 <!-- SIDEBAR -->
@@ -2295,12 +2312,12 @@
 
 
 <div class="date-nav">
-  <button class="nav-btn" onclick="changeDay(-1)">‹</button>
+  <button class="nav-btn" onclick="changeDay(-1)" aria-label="前一天"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg></button>
   <div>
     <div class="date-display" id="dateDisplay" onclick="openCalendar()">—</div>
   </div>
-  <button class="nav-btn" onclick="changeDay(1)">›</button>
-  <button class="today-btn" onclick="goToday()">今天</button>
+  <button class="nav-btn" onclick="changeDay(1)" aria-label="后一天"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg></button>
+  <button class="today-btn" onclick="goToday()">TODAY</button>
 </div>
 
 <div class="year-tabs" id="yearTabs"></div>
@@ -2653,13 +2670,13 @@
     <div class="font-size-row">
       <div class="font-size-label">
         <span class="font-size-label-text">主页预览字号</span>
-        <span class="font-size-value" id="previewFontSizeVal">12 px</span>
+        <span class="font-size-value" id="previewFontSizeVal">13 px</span>
       </div>
       <div class="preview-size-tiers" id="previewSizeTiers">
-        <button class="psz-btn" data-size="10" onclick="setPreviewFontSize(10)">小</button>
-        <button class="psz-btn" data-size="12" onclick="setPreviewFontSize(12)">中</button>
-        <button class="psz-btn" data-size="15" onclick="setPreviewFontSize(15)">大</button>
-        <button class="psz-btn" data-size="18" onclick="setPreviewFontSize(18)">超大</button>
+        <button class="psz-btn" data-size="11" onclick="setPreviewFontSize(11)">小</button>
+        <button class="psz-btn" data-size="13" onclick="setPreviewFontSize(13)">中</button>
+        <button class="psz-btn" data-size="16" onclick="setPreviewFontSize(16)">大</button>
+        <button class="psz-btn" data-size="19" onclick="setPreviewFontSize(19)">超大</button>
       </div>
       <div class="font-size-hint">字越大每条预览能看到的字数越少</div>
     </div>
@@ -2848,7 +2865,7 @@
   });
 
   function render() {
-    document.getElementById('dateDisplay').innerHTML = `${currentDate.getMonth()+1}<span style="font-size:0.5em;color:var(--text-muted);margin:0 4px 0 2px;">月</span>${currentDate.getDate()}<span style="font-size:0.5em;color:var(--text-muted);margin-left:2px;">日</span><span style="font-size:0.4em;color:var(--text-muted);margin-left:12px;letter-spacing:.05em;">${currentDate.getFullYear()}</span>`;
+    document.getElementById('dateDisplay').innerHTML = `<span style="display:inline-flex;align-items:flex-end;line-height:1;">${currentDate.getMonth()+1}<span style="font-size:0.5em;color:var(--text-muted);margin:0 4px 0 2px;">月</span>${currentDate.getDate()}<span style="font-size:0.5em;color:var(--text-muted);margin-left:2px;">日</span><span style="font-size:0.4em;color:var(--text-muted);margin-left:12px;letter-spacing:.05em;">${currentDate.getFullYear()}</span></span>`;
 
     // 根据当前视图决定渲染哪个
     if(currentView === 'list'){
@@ -5161,7 +5178,7 @@
   // 字号调节
   function applyFontSizes(){
     const editorSize = parseInt(localStorage.getItem('diary_editor_font_size') || '18');
-    const previewSize = parseInt(localStorage.getItem('diary_preview_font_size') || '12');
+    const previewSize = parseInt(localStorage.getItem('diary_preview_font_size') || '13');
     document.documentElement.style.setProperty('--editor-font-size', editorSize + 'px');
     document.documentElement.style.setProperty('--preview-font-size', previewSize + 'px');
   }
@@ -5190,7 +5207,7 @@
     renderFontList();
     // 同步滑条值到当前设置
     const editorSize = parseInt(localStorage.getItem('diary_editor_font_size') || '18');
-    const previewSize = parseInt(localStorage.getItem('diary_preview_font_size') || '12');
+    const previewSize = parseInt(localStorage.getItem('diary_preview_font_size') || '13');
     document.getElementById('editorFontSizeSlider').value = editorSize;
     document.getElementById('editorFontSizeVal').textContent = editorSize + ' px';
     setPreviewFontSize(previewSize);

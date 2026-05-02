@@ -10,7 +10,7 @@
 // 注意：这是PWA的基础离线壳。日记数据本身存在localStorage，
 // localStorage本来就在本地，离线读写不受SW影响。
 
-const CACHE_VERSION = 'diary-v93';
+const CACHE_VERSION = 'diary-v102';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const FONT_CACHE = `${CACHE_VERSION}-fonts`;
 
