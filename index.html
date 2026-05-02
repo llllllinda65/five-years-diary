@@ -1361,7 +1361,26 @@
   .editor-divider{margin:16px 24px 0;height:1px;background:var(--border);}
 
   /* TOOLBAR */
-  .editor-toolbar{padding:8px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:3px;flex-wrap:wrap;flex-shrink:0;background:var(--bg);}
+  .editor-toolbar{
+    padding:8px 24px;
+    border-top:1px solid var(--border);
+    border-bottom:none;
+    display:flex;align-items:center;gap:3px;flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    flex-shrink:0;
+    background:var(--bg);
+    position:fixed;
+    left:0;right:0;
+    bottom:0;
+    z-index:300;
+    /* 安全区适配 · 没键盘时贴屏幕底，加底部安全区 padding */
+    padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  }
+  /* 隐藏滚动条但保留滚动 */
+  .editor-toolbar::-webkit-scrollbar{display:none;}
+  /* 编辑区下方加 padding 防工具栏挡住正文 */
+  .editor-area{padding-bottom:80px !important;}
   .tb-sep{width:1px;height:18px;background:var(--border);margin:0 3px;}
   .tb-btn{background:none;border:none;color:var(--text-muted);padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'Noto Serif SC',serif;transition:all .15s;display:flex;align-items:center;gap:3px;}
   .tb-btn:hover{background:var(--border);color:var(--text-primary);}
@@ -2077,7 +2096,7 @@
     <button class="tb-btn" onclick="insertLink()" title="插入链接">
       <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg>
     </button>
-    <button class="tb-btn" id="insertImageBtn" onclick="document.getElementById('imgFileInput').click()" title="插入图片">
+    <button class="tb-btn" id="insertImageBtn" onclick="triggerImagePicker()" title="插入图片">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><polyline points="21,15 16,10 5,21"/></svg>
     </button>
     <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none;" onchange="handleImageInsert(event)">
@@ -3151,6 +3170,35 @@
   }
 
   // ═══════════════════════════════════════════
+  // ═══════════════════════════════════════════
+  // 工具栏跟随键盘（参考苹果备忘录）
+  // PWA standalone 模式下完美 · Safari浏览器内会和系统辅助条叠
+  // ═══════════════════════════════════════════
+  (function(){
+    if(!window.visualViewport) return;
+    const toolbar = () => document.querySelector('.editor-overlay.open .editor-toolbar');
+    function update(){
+      const tb = toolbar();
+      if(!tb) return;
+      const vv = window.visualViewport;
+      // 键盘高度 = 窗口高度 - 视觉视口高度 - 视口顶偏移
+      const kbOffset = window.innerHeight - vv.height - vv.offsetTop;
+      if(kbOffset > 30){
+        // 键盘弹起：工具栏抬到键盘正上方
+        tb.style.bottom = kbOffset + 'px';
+        tb.style.paddingBottom = '8px';
+      } else {
+        // 键盘收起：贴底部 + 安全区 padding
+        tb.style.bottom = '0';
+        tb.style.paddingBottom = '';
+      }
+    }
+    window.visualViewport.addEventListener('resize', update);
+    window.visualViewport.addEventListener('scroll', update);
+    document.addEventListener('focusin', () => setTimeout(update, 50), true);
+    document.addEventListener('focusout', () => setTimeout(update, 250), true);
+  })();
+
   // 三指手势：左滑撤销 · 右滑重做
   // 仅在编辑器打开时生效
   // ═══════════════════════════════════════════
@@ -3519,6 +3567,28 @@
   }
 
   // ── 插入图片（自动压缩到500KB以内） ──
+  // 每次点插图都新建一个 input，避开 iOS PWA 第二次调用静默失败的 bug
+  function triggerImagePicker(){
+    // 先清掉可能残留的旧 input
+    document.querySelectorAll('input[data-ephemeral-img-picker="1"]').forEach(el => el.remove());
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+    inp.multiple = true;
+    inp.style.position = 'fixed';
+    inp.style.left = '-9999px';
+    inp.style.top = '-9999px';
+    inp.dataset.ephemeralImgPicker = '1';
+    inp.addEventListener('change', (e) => {
+      handleImageInsert(e);
+      // 用完即删
+      setTimeout(() => inp.remove(), 100);
+    });
+    document.body.appendChild(inp);
+    // 触发原生文件选择器
+    inp.click();
+  }
+
   async function handleImageInsert(event){
     const files = Array.from(event.target.files || []);
     event.target.value = '';
@@ -3600,8 +3670,38 @@
       return;
     }
 
+    // 重复检测 · 用base64前缀做指纹
+    const fingerprint = (s) => (s || '').slice(0, 1000);
+    const existingFps = new Set(currentImages.map(fingerprint));
+    const dupIdx = [];     // newImages里重复的索引
+    const uniqIdx = [];    // newImages里没重复的索引
+    newImages.forEach((src, i) => {
+      if(existingFps.has(fingerprint(src))) dupIdx.push(i);
+      else uniqIdx.push(i);
+    });
+
+    let imagesToAdd = newImages;
+    if(dupIdx.length > 0){
+      const msg = dupIdx.length === newImages.length
+        ? `这 ${dupIdx.length} 张之前加过\n\n确定要再加一遍吗？`
+        : `选了 ${newImages.length} 张，其中 ${dupIdx.length} 张之前加过\n\n要怎么处理？\n· 确定 = 全部都加（重复的也加）\n· 取消 = 只加 ${uniqIdx.length} 张新的`;
+      const addAll = confirm(msg);
+      if(addAll){
+        imagesToAdd = newImages;
+      } else {
+        imagesToAdd = uniqIdx.map(i => newImages[i]);
+        if(imagesToAdd.length === 0){
+          // 全是重复 + 用户选不加 → 啥也不做
+          if(failures.length > 0 || nonImageCount > 0){
+            alert(buildFailureMessage());
+          }
+          return;
+        }
+      }
+    }
+
     // 合并到images数组并保存
-    const finalImages = [...currentImages, ...newImages];
+    const finalImages = [...currentImages, ...imagesToAdd];
     const html = document.getElementById('editorArea').innerHTML;
     saveEntry(entryDate, editorYear, html, entry.mood, finalImages);
 
@@ -3611,7 +3711,7 @@
 
     if(failures.length > 0 || nonImageCount > 0){
       const totalFailed = failures.length + nonImageCount;
-      alert(`成功 ${newImages.length} 张\n${totalFailed} 个失败：\n\n` + buildFailureMessage());
+      alert(`成功 ${imagesToAdd.length} 张\n${totalFailed} 个失败：\n\n` + buildFailureMessage());
     }
   }
 
