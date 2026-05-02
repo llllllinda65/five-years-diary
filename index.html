@@ -188,6 +188,7 @@
     box-shadow:none !important;
     padding:10px 16px !important;
     margin:0 !important;
+    flex-direction:column !important;
   }
   [data-theme="latte"] .entry-card.current-year{
     background:rgba(139,90,60,0.08) !important;
@@ -5486,7 +5487,8 @@
   })();
 
   // ── 全局返回手势 · 二级页面通用 ──
-  // 任何位置水平滑动超过 80px 都触发返回（向左或向右都可以）
+  // 只允许从屏幕左侧约 30px 内开始的右滑触发返回
+  // 防止 iOS 选图返回 PWA 时的 phantom touchend 误触发
   function bindSwipeBack(overlayId, closeFn){
     const el = document.getElementById(overlayId);
     if(!el) return;
@@ -5496,6 +5498,8 @@
       const t = e.touches[0];
       // 排除编辑器文字输入区、图片网格、下拉弹窗里的触摸 · 它们有自己的手势
       if(e.target.closest('.editor-area, .editor-img-grid, .weather-dropdown, .guided-mode, .img-lightbox')) return;
+      // 只接受从屏幕左边缘开始的滑动 · 这样 iOS 系统幻影事件无法触发
+      if(t.clientX > 30) return;
       startX = t.clientX; startY = t.clientY; startT = Date.now();
       swiping = true;
     }, {passive:true});
@@ -5506,9 +5510,8 @@
       const dx = t.clientX - startX;
       const dy = t.clientY - startY;
       const dt = Date.now() - startT;
-      // 水平位移 >80px · 垂直位移<50 · 600ms内 → 返回
-      // 不限起点位置，任何地方都可以
-      if(Math.abs(dx) > 80 && Math.abs(dy) < 50 && dt < 600){
+      // 必须右滑 dx>80 · 起点合法 · 600ms内 · 垂直位移<50 → 返回
+      if(dx > 80 && Math.abs(dy) < 50 && dt < 600){
         closeFn();
       }
     });
