@@ -4193,6 +4193,14 @@
     renderImageGrid(finalImages, false);
     pushSnapshot();
 
+    // 临时调试 · 报告每一步状态
+    const grid = document.getElementById('editorImageGrid');
+    const gridHTML = grid ? grid.innerHTML.length : 'NULL';
+    const gridChildren = grid ? grid.children.length : 'NULL';
+    const editorYearVal = editorYear === null ? 'NULL!!!' : editorYear;
+    const htmlLen = html.length;
+    alert(`调试 v105:\nimagesToAdd=${imagesToAdd.length}\nfinalImages=${finalImages.length}\neditorYear=${editorYearVal}\nhtml长度=${htmlLen}\ngrid内HTML长度=${gridHTML}\ngrid子元素=${gridChildren}`);
+
     if(failures.length > 0 || nonImageCount > 0){
       const totalFailed = failures.length + nonImageCount;
       alert(`成功 ${imagesToAdd.length} 张\n${totalFailed} 个失败：\n\n` + buildFailureMessage());
