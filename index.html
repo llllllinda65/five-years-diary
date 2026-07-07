@@ -2097,21 +2097,29 @@
   /* 只在引导模式下显示 */
   .editor-overlay:not(.guide-on) .guided-done-btn{display:none;}
   .guided-divider { height:1px; background:var(--border-light); margin:4px 0 0; }
-  .editor-area-wrap{position:relative;}
+  .editor-topline{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .editor-topline .editor-wordcount{margin-bottom:0;}
   .guide-inline-btn{
-    position:absolute;
-    top:0;right:0;
-    z-index:5;
-    background:none; border:none; padding:2px 0;
-    color:var(--text-muted);
-    font-family:'Noto Serif SC',serif; font-size:13px;
-    letter-spacing:.05em;
+    flex-shrink:0;
+    background:var(--text-primary);
+    color:var(--bg);
+    border:none;
+    border-radius:4px;
+    padding:4px 12px;
+    font-family:'Noto Serif SC',serif; font-size:12px;
+    letter-spacing:.1em;
     cursor:pointer;
-    transition:color .15s;
+    transition:opacity .15s;
     -webkit-tap-highlight-color:transparent;
   }
   .guide-inline-btn:hover,
-  .guide-inline-btn.active{color:var(--text-primary);}
+  .guide-inline-btn.active{opacity:.82;}
 
   /* 引导模式下隐藏图片相关UI · 引导模式只写文字 */
   .editor-overlay.guide-on #editorImageGrid{display:none !important;}
@@ -2445,7 +2453,10 @@
   <div class="editor-scroll" onclick="focusEditor()">
     <div class="editor-content">
 
-      <div class="editor-wordcount" id="editorWC"></div>
+      <div class="editor-topline">
+        <div class="editor-wordcount" id="editorWC"></div>
+        <button class="guide-inline-btn" id="pillGuide" onclick="toggleGuideMode()">【引导】</button>
+      </div>
 
       <!-- 每日一问 -->
       <div class="editor-prompt" id="editorPrompt" onclick="usePrompt()">
@@ -2456,10 +2467,7 @@
       </div>
 
       <!-- FREE WRITE MODE -->
-      <div class="editor-area-wrap">
-        <button class="guide-inline-btn" id="pillGuide" onclick="toggleGuideMode()">【引导】</button>
-        <div class="editor-area" id="editorArea" contenteditable="true" data-placeholder=""></div>
-      </div>
+      <div class="editor-area" id="editorArea" contenteditable="true" data-placeholder=""></div>
 
       <!-- 图片网格（永远在文字下方，只用于显示/删除/重排已存的照片） -->
       <div class="editor-img-grid" id="editorImageGrid"></div>
