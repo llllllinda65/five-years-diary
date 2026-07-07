@@ -1556,18 +1556,16 @@
   .editor-divider{margin:16px 24px 0;height:1px;background:var(--border);}
 
   /* TOOLBAR */
-  /* 键盘上方紧凑药丸条 */
+  /* 固定在分隔线下方的格式条 · 不随内容滚动 · 永远贴着分隔线，不会盖住正文 */
   .editor-toolbar{
-    position:sticky;
-    top:0;
-    z-index:50;
     display:flex;
     justify-content:space-around;
     align-items:center;
-    padding:14px 24px 12px;
-    margin:0 -24px 8px;
+    padding:10px 24px 12px;
+    margin:0;
     border-bottom:1px solid var(--border-light, var(--border));
     background:var(--bg);
+    flex-shrink:0;
   }
   .editor-toolbar > *{pointer-events:auto;}
   .pill-btn{
@@ -2443,6 +2441,26 @@
 
   <div class="editor-divider"></div>
 
+  <!-- 格式条：固定贴在分隔线下方，不随正文滚动，也就不会盖住写的字 -->
+  <div class="editor-toolbar" onclick="event.stopPropagation()">
+    <button class="pill-btn" id="pillGuide" onclick="toggleGuideMode()">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4.5 2 7-5.5-4-5.5 4 2-7L3 9h7z"/></svg>
+      <span>引导</span>
+    </button>
+    <button class="pill-btn" id="pillImage" onclick="toggleImageMode()">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+      <span>插图</span>
+    </button>
+    <button class="pill-btn" id="pillFormat" onclick="openFormatSheet()">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="5" x2="12" y2="20"/></svg>
+      <span>格式</span>
+    </button>
+    <button class="pill-btn" id="pillColor" onclick="openColorSheet()">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 110-20 5.5 5.5 0 015.5 5.5c0 1.4-1.1 2.5-2.5 2.5h-2c-1.4 0-2.5 1.1-2.5 2.5 0 .5.2 1 .5 1.4.4.5 1 1.1 1 1.6 0 1.4-1.1 2.5-2.5 2.5z"/></svg>
+      <span>颜色</span>
+    </button>
+  </div>
+
   <!-- 隐藏的图片输入（药丸条已挪到顶部） -->
   <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none;" onchange="handleImageInsert(event)">
 
@@ -2516,26 +2534,6 @@
   <!-- EDITOR BODY -->
   <div class="editor-scroll" onclick="focusEditor()">
     <div class="editor-content">
-
-      <!-- 顶部药丸条（永远在线，sticky 跟随滚动） -->
-      <div class="editor-toolbar" onclick="event.stopPropagation()">
-        <button class="pill-btn" id="pillGuide" onclick="toggleGuideMode()">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4.5 2 7-5.5-4-5.5 4 2-7L3 9h7z"/></svg>
-          <span>引导</span>
-        </button>
-        <button class="pill-btn" id="pillImage" onclick="toggleImageMode()">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
-          <span>插图</span>
-        </button>
-        <button class="pill-btn" id="pillFormat" onclick="openFormatSheet()">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5h16v2"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="5" x2="12" y2="20"/></svg>
-          <span>格式</span>
-        </button>
-        <button class="pill-btn" id="pillColor" onclick="openColorSheet()">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 110-20 5.5 5.5 0 015.5 5.5c0 1.4-1.1 2.5-2.5 2.5h-2c-1.4 0-2.5 1.1-2.5 2.5 0 .5.2 1 .5 1.4.4.5 1 1.1 1 1.6 0 1.4-1.1 2.5-2.5 2.5z"/></svg>
-          <span>颜色</span>
-        </button>
-      </div>
 
       <div class="editor-wordcount" id="editorWC"></div>
 
@@ -3853,7 +3851,7 @@
   (function(){
     if(!window.visualViewport) return;
     function update(){
-      // toolbar 已 sticky 在编辑器顶部 · 不再跟键盘走
+      // toolbar 已固定在分隔线下方，不随内容滚动 · 也不再跟键盘走
       // 只让格式/颜色抽屉跟键盘走
       const sheets = document.querySelectorAll('.editor-overlay.open .fmt-sheet');
       const vv = window.visualViewport;
