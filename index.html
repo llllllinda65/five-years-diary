@@ -3170,7 +3170,7 @@
 
     // Restore guide mode preference
     isGuideMode = localStorage.getItem('diary_guide_mode') === '1';
-    document.getElementById('pillGuide')?.classList.toggle('active', isGuideMode);
+    syncGuideBtn();
     document.getElementById('guideToggleBtn')?.classList.toggle('active', isGuideMode);
     document.getElementById('editorArea').style.display = isGuideMode ? 'none' : '';
     document.getElementById('guidedMode').classList.toggle('active', isGuideMode);
@@ -3339,9 +3339,16 @@
   let isGuideMode = false;
   const GUIDE_KEYS = ['gq1','gq2','gq3','gq4'];
 
+  function syncGuideBtn(){
+    const btn = document.getElementById('pillGuide');
+    if(!btn) return;
+    btn.classList.toggle('active', isGuideMode);
+    btn.textContent = isGuideMode ? '【确认】' : '【引导】';
+  }
+
   function toggleGuideMode() {
     isGuideMode = !isGuideMode;
-    document.getElementById('pillGuide')?.classList.toggle('active', isGuideMode);
+    syncGuideBtn();
     document.getElementById('guideToggleBtn')?.classList.toggle('active', isGuideMode);
     document.getElementById('editorArea').style.display = isGuideMode ? 'none' : '';
     document.getElementById('guidedMode').classList.toggle('active', isGuideMode);
@@ -3476,7 +3483,7 @@
     // 手动模式：切回自由模式 + 光标到末尾 + 显示已汇入提示
     isGuideMode = false;
     localStorage.setItem('diary_guide_mode', '0');
-    document.getElementById('pillGuide')?.classList.remove('active');
+    syncGuideBtn();
     document.getElementById('guideToggleBtn')?.classList.remove('active');
     document.getElementById('editorArea').style.display = '';
     document.getElementById('guidedMode').classList.remove('active');
