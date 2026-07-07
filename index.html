@@ -1211,11 +1211,6 @@
   [data-theme="maple"] .editor-area{
     background:transparent;
   }
-  [data-theme="maple"] .selection-menu{
-    background:rgba(245,237,230,0.92);
-    backdrop-filter:blur(2px);
-    -webkit-backdrop-filter:blur(2px);
-  }
 
 
   /* TOP NAV BAR */
@@ -1555,30 +1550,6 @@
   /* DIVIDER LINE */
   .editor-divider{margin:16px 24px 0;height:1px;background:var(--border);}
 
-  /* SELECTION MENU */
-  /* 选中文字（或长按选词）时贴着选区浮出的格式/颜色小菜单，松手/取消选中就收起 */
-  .selection-menu{
-    position:fixed;
-    left:0;top:0;
-    z-index:60;
-    display:flex;
-    gap:2px;
-    padding:6px 10px;
-    border-radius:20px;
-    background:var(--bg);
-    border:0.5px solid var(--border-strong, var(--border));
-    box-shadow:0 6px 20px rgba(0,0,0,0.16);
-    opacity:0;
-    transform:translate(-50%, -100%) scale(.95);
-    transition:opacity .12s ease-out, transform .12s ease-out;
-    pointer-events:none;
-  }
-  .selection-menu.show{
-    opacity:1;
-    transform:translate(-50%, -100%) scale(1);
-    pointer-events:auto;
-  }
-  .selection-menu .pill-btn{padding:4px 10px;}
   .pill-btn{
     background:none;
     border:none;
@@ -2126,17 +2097,21 @@
   /* 只在引导模式下显示 */
   .editor-overlay:not(.guide-on) .guided-done-btn{display:none;}
   .guided-divider { height:1px; background:var(--border-light); margin:4px 0 0; }
-  .guide-toggle-btn { 
-    background:none; border:1px solid var(--border); color:var(--text-muted);
-    padding:5px 12px; border-radius:14px; cursor:pointer;
+  .editor-area-wrap{position:relative;}
+  .guide-inline-btn{
+    position:absolute;
+    top:0;right:0;
+    z-index:5;
+    background:none; border:none; padding:2px 0;
+    color:var(--text-muted);
     font-family:'Noto Serif SC',serif; font-size:13px;
-    transition:all .15s; display:flex; align-items:center; gap:5px;
-    margin:0 0 16px;
+    letter-spacing:.05em;
+    cursor:pointer;
+    transition:color .15s;
     -webkit-tap-highlight-color:transparent;
   }
-  .guide-toggle-btn svg{width:14px;height:14px;}
-  .guide-toggle-btn:hover { border-color:var(--accent); color:var(--accent); }
-  .guide-toggle-btn.active { background:var(--accent); border-color:var(--accent); color:var(--bg); }
+  .guide-inline-btn:hover,
+  .guide-inline-btn.active{color:var(--text-primary);}
 
   /* 引导模式下隐藏图片相关UI · 引导模式只写文字 */
   .editor-overlay.guide-on #editorImageGrid{display:none !important;}
@@ -2399,16 +2374,6 @@
 
   <div class="editor-divider"></div>
 
-  <!-- 选中文字（或长按）时才浮出的格式/颜色小菜单，其余时候完全不占地方 -->
-  <div class="selection-menu" id="selectionMenu" onclick="event.stopPropagation()">
-    <button class="pill-btn" id="pillFormat" onclick="openFormatSheet()">
-      <span>格式</span>
-    </button>
-    <button class="pill-btn" id="pillColor" onclick="openColorSheet()">
-      <span>颜色</span>
-    </button>
-  </div>
-
   <!-- 格式抽屉（藏在键盘上方浮起来） -->
   <div class="fmt-sheet" id="formatSheet">
     <div class="fmt-sheet-head">
@@ -2482,11 +2447,6 @@
 
       <div class="editor-wordcount" id="editorWC"></div>
 
-      <button class="guide-toggle-btn" id="pillGuide" onclick="toggleGuideMode()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4.5 2 7-5.5-4-5.5 4 2-7L3 9h7z"/></svg>
-        <span>引导</span>
-      </button>
-
       <!-- 每日一问 -->
       <div class="editor-prompt" id="editorPrompt" onclick="usePrompt()">
         <button class="editor-prompt-close" onclick="event.stopPropagation();dismissPrompt()">×</button>
@@ -2496,7 +2456,10 @@
       </div>
 
       <!-- FREE WRITE MODE -->
-      <div class="editor-area" id="editorArea" contenteditable="true" data-placeholder=""></div>
+      <div class="editor-area-wrap">
+        <button class="guide-inline-btn" id="pillGuide" onclick="toggleGuideMode()">【引导】</button>
+        <div class="editor-area" id="editorArea" contenteditable="true" data-placeholder=""></div>
+      </div>
 
       <!-- 图片网格（永远在文字下方，只用于显示/删除/重排已存的照片） -->
       <div class="editor-img-grid" id="editorImageGrid"></div>
@@ -3341,7 +3304,6 @@
       if (isGuideMode) saveGuided();
     }
     document.getElementById('editorOverlay').classList.remove('open');
-    document.getElementById('selectionMenu')?.classList.remove('show');
     document.getElementById('weatherDropdown').classList.remove('open');
     document.getElementById('moreMenu')?.classList.remove('open');
     resetEditHistory();
@@ -3586,7 +3548,6 @@
   function openFormatSheet(){
     closeColorSheet();
     document.getElementById('formatSheet').classList.add('open');
-    document.getElementById('selectionMenu')?.classList.remove('show');
     armSheetCloseOnOutside('formatSheet', closeFormatSheet);
   }
   function closeFormatSheet(){
@@ -3597,7 +3558,6 @@
     closeFormatSheet();
     renderColorGrid();
     document.getElementById('colorSheet').classList.add('open');
-    document.getElementById('selectionMenu')?.classList.remove('show');
     armSheetCloseOnOutside('colorSheet', closeColorSheet);
   }
   function closeColorSheet(){
@@ -3690,55 +3650,12 @@
           el.style.paddingBottom = '';
         }
       });
-      // 键盘一动，选区的屏幕坐标就变了，格式/颜色小菜单要么重新定位，要么先收起
-      updateSelectionMenu();
     }
     window.visualViewport.addEventListener('resize', update);
     window.visualViewport.addEventListener('scroll', update);
     document.addEventListener('focusin', () => setTimeout(update, 50), true);
     document.addEventListener('focusout', () => setTimeout(update, 250), true);
   })();
-
-  // ═══════════════════════════════════════════
-  // 选中文字（或长按选词）时浮出格式/颜色小菜单
-  // 贴着选区上方，选区消失/切走entry就收起
-  // ═══════════════════════════════════════════
-  function updateSelectionMenu(){
-    const menu = document.getElementById('selectionMenu');
-    const editorArea = document.getElementById('editorArea');
-    if(!menu || !editorArea) return;
-    const sel = window.getSelection();
-    if(!sel || sel.rangeCount === 0 || sel.isCollapsed){
-      menu.classList.remove('show');
-      return;
-    }
-    if(!editorArea.contains(sel.anchorNode) || !editorArea.contains(sel.focusNode)){
-      menu.classList.remove('show');
-      return;
-    }
-    const rect = sel.getRangeAt(0).getBoundingClientRect();
-    if(rect.width === 0 && rect.height === 0){
-      menu.classList.remove('show');
-      return;
-    }
-    const menuH = menu.offsetHeight || 40;
-    let top = rect.top - menuH - 10;
-    if(top < 8) top = rect.bottom + 10;
-    const pad = 56;
-    const left = Math.min(Math.max(rect.left + rect.width / 2, pad), window.innerWidth - pad);
-    menu.style.left = left + 'px';
-    menu.style.top = top + 'px';
-    menu.classList.add('show');
-  }
-  let _selMenuTimer = null;
-  document.addEventListener('selectionchange', () => {
-    clearTimeout(_selMenuTimer);
-    _selMenuTimer = setTimeout(updateSelectionMenu, 60);
-  });
-  // 正文区域自己滚动时，选区的屏幕坐标也会变，直接收起（不追着重算，避免抖动）
-  document.querySelector('.editor-scroll')?.addEventListener('scroll', () => {
-    document.getElementById('selectionMenu')?.classList.remove('show');
-  }, {passive:true});
 
   // 三指手势：左滑撤销 · 右滑重做
   // 仅在编辑器打开时生效
