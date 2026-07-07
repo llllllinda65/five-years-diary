@@ -1556,16 +1556,20 @@
   .editor-divider{margin:16px 24px 0;height:1px;background:var(--border);}
 
   /* TOOLBAR */
-  /* 固定在分隔线下方的格式条 · 不随内容滚动 · 永远贴着分隔线，不会盖住正文 */
+  /* 贴着键盘的格式条 · 键盘弹起时跟着键盘走，键盘收起时贴在屏幕底部 · 单手拇指可及，不随正文滚动也不怕被键盘顶飞 */
   .editor-toolbar{
+    position:fixed;
+    left:0;right:0;
+    bottom:0;
+    z-index:50;
     display:flex;
     justify-content:space-around;
     align-items:center;
-    padding:10px 24px 12px;
+    padding:10px 24px calc(10px + env(safe-area-inset-bottom));
     margin:0;
-    border-bottom:1px solid var(--border-light, var(--border));
+    border-top:1px solid var(--border-light, var(--border));
     background:var(--bg);
-    flex-shrink:0;
+    transition:bottom .15s ease-out;
   }
   .editor-toolbar > *{pointer-events:auto;}
   .pill-btn{
@@ -1700,7 +1704,7 @@
   .tb-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
   /* EDITOR BODY */
-  .editor-scroll{flex:1;overflow-y:auto;padding:24px 24px 60px;}
+  .editor-scroll{flex:1;overflow-y:auto;padding:24px 24px 76px;}
   .editor-content{max-width:680px;margin:0 auto;}
   .editor-wordcount{font-family:'Lato',sans-serif;font-size:11px;color:var(--text-muted);margin-bottom:20px;}
 
@@ -2253,7 +2257,7 @@
   @media(max-width:600px){
     .header,.date-nav{padding-left:16px;padding-right:16px;}
     .date-display{font-size:37px;}
-    .editor-scroll{padding:24px 18px;}
+    .editor-scroll{padding:24px 18px 76px;}
     .editor-nav,.editor-toolbar{padding-left:18px;padding-right:18px;}
     .theme-grid{grid-template-columns:1fr 1fr;}
   }
@@ -2441,7 +2445,7 @@
 
   <div class="editor-divider"></div>
 
-  <!-- 格式条：固定贴在分隔线下方，不随正文滚动，也就不会盖住写的字 -->
+  <!-- 格式条：固定贴着键盘/屏幕底部，不随正文滚动，单手拇指可及 -->
   <div class="editor-toolbar" onclick="event.stopPropagation()">
     <button class="pill-btn" id="pillGuide" onclick="toggleGuideMode()">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4.5 2 7-5.5-4-5.5 4 2-7L3 9h7z"/></svg>
@@ -3851,9 +3855,9 @@
   (function(){
     if(!window.visualViewport) return;
     function update(){
-      // toolbar 已固定在分隔线下方，不随内容滚动 · 也不再跟键盘走
-      // 只让格式/颜色抽屉跟键盘走
+      // toolbar 贴着键盘走：键盘弹起时跟到键盘上方，收起时落回屏幕底部
       const sheets = document.querySelectorAll('.editor-overlay.open .fmt-sheet');
+      const toolbar = document.querySelector('.editor-overlay.open .editor-toolbar');
       const vv = window.visualViewport;
       const kbOffset = window.innerHeight - vv.height - vv.offsetTop;
       sheets.forEach(el => {
@@ -3865,6 +3869,13 @@
           el.style.paddingBottom = '';
         }
       });
+      if(toolbar){
+        if(kbOffset > 30){
+          toolbar.style.bottom = kbOffset + 'px';
+        } else {
+          toolbar.style.bottom = '0';
+        }
+      }
     }
     window.visualViewport.addEventListener('resize', update);
     window.visualViewport.addEventListener('scroll', update);
