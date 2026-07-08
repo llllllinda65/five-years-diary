@@ -121,7 +121,9 @@
   /* ═══════════════════════════════════════════
      LATTE 主题 → 版型 6 老书报刊打字机
      ═══════════════════════════════════════════ */
-  [data-theme="latte"] .date-nav{
+  [data-theme="latte"] .date-nav,
+  [data-theme="palm"] .date-nav,
+  [data-theme="dark"] .date-nav{
     padding:14px 20px 10px;
     border-bottom:3px double var(--text-primary);
     flex-direction:row;
@@ -132,7 +134,9 @@
     position:relative;
   }
   /* mast 占满整行在最上 */
-  [data-theme="latte"] .date-nav::before{
+  [data-theme="latte"] .date-nav::before,
+  [data-theme="palm"] .date-nav::before,
+  [data-theme="dark"] .date-nav::before{
     content:'The Five Year Diary';
     font-family:'IM Fell English',serif;
     font-size:24px;
@@ -144,14 +148,18 @@
     margin-bottom:4px;
   }
   /* 日期居中、箭头贴日期 */
-  [data-theme="latte"] .date-display{
+  [data-theme="latte"] .date-display,
+  [data-theme="palm"] .date-display,
+  [data-theme="dark"] .date-display{
     font-family:'Special Elite',monospace !important;
     font-size:14px !important;
     letter-spacing:.2em;
     color:var(--text-primary);
     text-transform:uppercase;
   }
-  [data-theme="latte"] .nav-btn{
+  [data-theme="latte"] .nav-btn,
+  [data-theme="palm"] .nav-btn,
+  [data-theme="dark"] .nav-btn{
     border:none !important;
     width:auto !important;
     height:auto !important;
@@ -161,11 +169,15 @@
     color:var(--text-muted) !important;
     padding:4px 6px !important;
   }
-  [data-theme="latte"] .nav-btn:hover{
+  [data-theme="latte"] .nav-btn:hover,
+  [data-theme="palm"] .nav-btn:hover,
+  [data-theme="dark"] .nav-btn:hover{
     color:var(--text-primary) !important;
   }
   /* 今天按钮浮到右侧不影响中央居中 */
-  [data-theme="latte"] .today-btn{
+  [data-theme="latte"] .today-btn,
+  [data-theme="palm"] .today-btn,
+  [data-theme="dark"] .today-btn{
     position:absolute !important;
     right:20px;
     top:50%;
@@ -176,11 +188,17 @@
     letter-spacing:.15em;
   }
   /* 主页背景泛黄横线纸感 */
-  [data-theme="latte"] .main{
+  [data-theme="latte"] .main,
+  [data-theme="palm"] .main{
     background-image:repeating-linear-gradient(0deg,transparent 0,transparent 22px,rgba(0,0,0,.025) 22px,rgba(0,0,0,.025) 23px);
   }
+  [data-theme="dark"] .main{
+    background-image:repeating-linear-gradient(0deg,transparent 0,transparent 22px,rgba(255,255,255,.03) 22px,rgba(255,255,255,.03) 23px);
+  }
   /* 每条年份卡：横排两列 → 改成上下结构（年份+标签横排，正文在下）打字机字 */
-  [data-theme="latte"] .entry-card{
+  [data-theme="latte"] .entry-card,
+  [data-theme="palm"] .entry-card,
+  [data-theme="dark"] .entry-card{
     background:transparent !important;
     border:none !important;
     border-bottom:1px solid rgba(0,0,0,.13) !important;
@@ -190,11 +208,24 @@
     margin:0 !important;
     flex-direction:column !important;
   }
+  [data-theme="dark"] .entry-card{
+    border-bottom:1px solid rgba(255,255,255,.10) !important;
+  }
   [data-theme="latte"] .entry-card.current-year{
     background:rgba(139,90,60,0.08) !important;
     border-left:3px solid var(--text-primary) !important;
   }
-  [data-theme="latte"] .entry-year-col{
+  [data-theme="palm"] .entry-card.current-year{
+    background:rgba(90,122,74,0.08) !important;
+    border-left:3px solid var(--text-primary) !important;
+  }
+  [data-theme="dark"] .entry-card.current-year{
+    background:rgba(212,165,116,0.07) !important;
+    border-left:3px solid var(--text-primary) !important;
+  }
+  [data-theme="latte"] .entry-year-col,
+  [data-theme="palm"] .entry-year-col,
+  [data-theme="dark"] .entry-year-col{
     flex-direction:row !important;
     align-items:center !important;
     gap:8px !important;
@@ -203,24 +234,32 @@
     width:100% !important;
     min-width:0 !important;
   }
-  [data-theme="latte"] .entry-year{
+  [data-theme="latte"] .entry-year,
+  [data-theme="palm"] .entry-year,
+  [data-theme="dark"] .entry-year{
     font-family:'IM Fell English',serif !important;
     font-size:15px !important;
     font-weight:400 !important;
     color:var(--text-primary) !important;
     line-height:1 !important;
   }
-  [data-theme="latte"] .entry-card.current-year .entry-year{
+  [data-theme="latte"] .entry-card.current-year .entry-year,
+  [data-theme="palm"] .entry-card.current-year .entry-year,
+  [data-theme="dark"] .entry-card.current-year .entry-year{
     font-style:italic;
     color:var(--accent) !important;
   }
   /* 年份后加 "in" 前缀 */
-  [data-theme="latte"] .entry-year::before{
+  [data-theme="latte"] .entry-year::before,
+  [data-theme="palm"] .entry-year::before,
+  [data-theme="dark"] .entry-year::before{
     content:'in ';
     font-style:italic;
     color:var(--text-muted);
   }
-  [data-theme="latte"] .wd-weather-row{
+  [data-theme="latte"] .wd-weather-row,
+  [data-theme="palm"] .wd-weather-row,
+  [data-theme="dark"] .wd-weather-row{
     flex:1;
     justify-content:flex-end !important;
     font-family:'Special Elite',monospace;
@@ -228,15 +267,23 @@
     letter-spacing:.2em;
     color:var(--text-muted);
   }
-  [data-theme="latte"] .entry-year-label{
+  [data-theme="latte"] .entry-year-label,
+  [data-theme="palm"] .entry-year-label,
+  [data-theme="dark"] .entry-year-label{
     font-family:'Special Elite',monospace !important;
     font-size:9px !important;
     color:var(--text-muted) !important;
     letter-spacing:.2em;
   }
-  [data-theme="latte"] .feel-box{display:none !important;}
-  [data-theme="latte"] .entry-body{padding-left:0 !important;}
-  [data-theme="latte"] .entry-preview{
+  [data-theme="latte"] .feel-box,
+  [data-theme="palm"] .feel-box,
+  [data-theme="dark"] .feel-box{display:none !important;}
+  [data-theme="latte"] .entry-body,
+  [data-theme="palm"] .entry-body,
+  [data-theme="dark"] .entry-body{padding-left:0 !important;}
+  [data-theme="latte"] .entry-preview,
+  [data-theme="palm"] .entry-preview,
+  [data-theme="dark"] .entry-preview{
     font-family:'Special Elite',monospace !important;
     font-size:11px !important;
     line-height:1.65 !important;
@@ -718,15 +765,7 @@
   .tex-dots .entry-body::before{background-image:radial-gradient(circle,var(--border) 1.2px,transparent 1.2px);background-size:18px 18px;}
 
   /* === 主题专属底纹 (放在 .entry-body 上，自动激活) === */
-
-  /* 棕榈：棕榈叶 — 斜45度细线模拟羽状叶 */
-  [data-theme="palm"] .entry-body::before{
-    background-image:
-      repeating-linear-gradient(115deg, transparent 0, transparent 20px, var(--border-light) 20px, var(--border-light) 21px),
-      repeating-linear-gradient(65deg, transparent 0, transparent 20px, var(--border-light) 20px, var(--border-light) 21px);
-    background-size: 60px 60px;
-    opacity:.35;
-  }
+  /* 棕榈已改用奶油拿铁的报刊版型，不再单独铺棕榈叶底纹 */
 
   /* expand btn */
   .entry-header-right{position:absolute;top:6px;right:6px;z-index:2;}
