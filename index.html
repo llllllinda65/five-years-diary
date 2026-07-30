@@ -753,6 +753,19 @@
     scrollbar-color:var(--border) transparent;
   }
   .entry-preview::-webkit-scrollbar{width:3px;}
+  .entry-meta-line{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:4px;
+    font-family:'Noto Serif SC',serif;
+    font-size:11px;
+    font-weight:400;
+    color:var(--text-muted);
+    opacity:.85;
+  }
+  .entry-meta-item{display:inline-flex;align-items:center;gap:3px;}
+  .entry-meta-item svg{flex-shrink:0;}
   .entry-preview::-webkit-scrollbar-track{background:transparent;}
   .entry-preview::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
   .entry-preview::-webkit-scrollbar-thumb:hover{background:var(--accent);}
@@ -1572,6 +1585,40 @@
   }
   .editor-year-row .weather-wrapper{
     position:relative;
+  }
+  /* 地点 / 同伴 */
+  .editor-meta-row{
+    margin-top:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+  .editor-meta-field{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    color:var(--text-muted);
+  }
+  .editor-meta-input{
+    border:none;
+    border-bottom:1px solid transparent;
+    background:none;
+    outline:none;
+    font-family:'Noto Serif SC',serif;
+    font-size:12px;
+    color:var(--text-muted);
+    width:96px;
+    padding:2px 0;
+    transition:border-color .15s, color .15s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .editor-meta-input:focus{
+    border-bottom-color:var(--border);
+    color:var(--text-primary);
+  }
+  .editor-meta-input::placeholder{
+    color:var(--text-muted);
+    opacity:.65;
   }
 
   /* WEATHER DROPDOWN */
@@ -2416,6 +2463,16 @@
           </div>
         </div>
       </div>
+      <div class="editor-meta-row">
+        <div class="editor-meta-field">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <input type="text" id="editorLocation" class="editor-meta-input" placeholder="地点" maxlength="30" oninput="queueSaveMeta()">
+        </div>
+        <div class="editor-meta-field">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          <input type="text" id="editorCompanion" class="editor-meta-input" placeholder="和谁在一起" maxlength="30" oninput="queueSaveMeta()">
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2822,6 +2879,20 @@
     if(images !== undefined) merged.images = images;
     localStorage.setItem(getDateKey(date, year), JSON.stringify(merged));
   }
+  let metaSaveTimer = null;
+  function queueSaveMeta(){
+    clearTimeout(metaSaveTimer);
+    metaSaveTimer = setTimeout(saveEntryMeta, 300);
+  }
+  function saveEntryMeta(){
+    if(editorYear === null) return;
+    const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
+    const location = document.getElementById('editorLocation').value.trim();
+    const companion = document.getElementById('editorCompanion').value.trim();
+    const existing = getEntry(entryDate, editorYear);
+    const merged = {...existing, location, companion};
+    localStorage.setItem(getDateKey(entryDate, editorYear), JSON.stringify(merged));
+  }
   function hasAnyEntry(date) {
     for (let i=0;i<YEARS;i++){
       const e=getEntry(date,new Date().getFullYear()+i);
@@ -2863,6 +2934,15 @@
   }
   function escapeHtml(s){
     return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  const META_PIN_SVG = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+  const META_PEOPLE_SVG = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>';
+  function renderEntryMetaLine(entry){
+    if(!entry.location && !entry.companion) return '';
+    const parts = [];
+    if(entry.location) parts.push(`<span class="entry-meta-item">${META_PIN_SVG}${escapeHtml(entry.location)}</span>`);
+    if(entry.companion) parts.push(`<span class="entry-meta-item">${META_PEOPLE_SVG}${escapeHtml(entry.companion)}</span>`);
+    return `<div class="entry-meta-line">${parts.join('')}</div>`;
   }
 
   // 点击代理：主页 preview 里点 tag → 跳搜索
@@ -2955,7 +3035,7 @@
           </div>
         </div>
         <div class="entry-body" data-year="${year}">
-          <div class="entry-preview" data-placeholder="${placeholder}">${tagifyHtml(entry.html||'')}${renderPreviewImages(entry.images)}</div>
+          <div class="entry-preview" data-placeholder="${placeholder}">${renderEntryMetaLine(entry)}${tagifyHtml(entry.html||'')}${renderPreviewImages(entry.images)}</div>
           <div class="entry-header-right">
             <button class="expand-btn" onclick="event.stopPropagation();openEditor(${year})" title="全屏编辑">›</button>
           </div>
@@ -3204,6 +3284,9 @@
     updateWeatherDisplay(entry.mood);
     updateMoodDisplay(entry.feel);
 
+    document.getElementById('editorLocation').value = entry.location || '';
+    document.getElementById('editorCompanion').value = entry.companion || '';
+
     const area = document.getElementById('editorArea');
     area.innerHTML = entry.html || '';
     area.dataset.placeholder = '';
@@ -3348,6 +3431,8 @@
       const entryDate = new Date(currentDate); entryDate.setFullYear(editorYear);
       const entry = getEntry(entryDate, editorYear);
       saveEntry(entryDate, editorYear, document.getElementById('editorArea').innerHTML, entry.mood);
+      clearTimeout(metaSaveTimer);
+      saveEntryMeta();
       if (isGuideMode) saveGuided();
     }
     document.getElementById('editorOverlay').classList.remove('open');
